@@ -11,8 +11,8 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
 from fastapi_csrf_protect import CsrfProtect
 
 try:  # pragma: no cover - fallback for tests without full library
@@ -571,54 +571,3 @@ async def reembed_face(face_id: str = Form(...)):
     return {"queued": True}
 
 
-@router.get("/audit_faces")
-async def audit_faces(request: Request, user=Depends(require_admin)):
-    """Display recent face database actions."""
-    raw = redis.lrange(AUDIT_LOG_KEY, 0, 49)
-    actions = []
-    for r in raw:
-        try:
-            item = json.loads(r if isinstance(r, str) else r.decode())
-            item["time"] = format_ts(item.get("ts", 0))
-            actions.append(item)
-        except Exception:
-            continue
-    return templates.TemplateResponse(
-        "audit_faces.html", {"request": request, "actions": actions}
-    )
-
-
-@router.get("/face_search")
-async def face_search_form(request: Request, user=Depends(require_viewer)):
-    """Display face search form."""
-    if not config_obj.get("features", {}).get("visitor_mgmt"):
-        return RedirectResponse("/", status_code=302)
-    return templates.TemplateResponse(
-        "face_search.html", {"request": request, "cfg": config}
-    )
-
-
-@router.post("/face_search")
-async def face_search(
-    request: Request,
-    photo: UploadFile | None = File(None),
-    captured: str = Form(""),
-    top_n: int = Form(5),
-):
-    """Search the face DB for similar visitors."""
-    if not config_obj.get("features", {}).get("visitor_mgmt"):
-        return RedirectResponse("/", status_code=302)
-    img_bytes, error = _validate_captured(captured)
-    if not img_bytes and not error:
-        img_bytes, error = await _validate_photo(photo)
-    if error:
-        return templates.TemplateResponse(
-            "face_search.html",
-            {"request": request, "cfg": config, "flash": error},
-            status_code=400,
-        )
-    results = _search_embeddings(img_bytes, top_n)
-    return templates.TemplateResponse(
-        "face_search.html",
-        {"request": request, "results": results, "cfg": config},
-    )

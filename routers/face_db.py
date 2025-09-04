@@ -7,27 +7,16 @@ from typing import Any
 
 import cv2
 import numpy as np
-from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi.responses import JSONResponse
 
 from config import config
 from modules import face_db
 from modules.camera_factory import open_capture
-from utils.deps import get_cameras, get_templates
+from utils.deps import get_cameras
 from utils.image import decode_base64_image
 
 router = APIRouter()
-
-
-@router.get("/face-db", response_class=HTMLResponse)
-def face_db_page(
-    request: Request, templates: Jinja2Templates = Depends(get_templates)
-):
-    """Render the simple Face DB webcam page."""
-    cfg = getattr(request.app.state, "config", {})
-    return templates.TemplateResponse("face_db.html", {"request": request, "cfg": cfg})
-
 
 # init_context routine
 def init_context(cfg: dict, redis_client) -> None:

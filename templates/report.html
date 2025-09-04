@@ -37,7 +37,6 @@
             <select id="type" class="form-select">
                 <option value="person" {{ 'selected' if selected_type=='person' else '' }}>Person Report</option>
                 {% if vehicle_enabled %}<option value="vehicle" {{ 'selected' if selected_type=='vehicle' else '' }}>Vehicle Report</option>{% endif %}
-                {% if face_enabled %}<option value="face" {{ 'selected' if selected_type=='face' else '' }}>Face Report</option>{% endif %}
             </select>
         </div>
         <div class="col-md-auto">

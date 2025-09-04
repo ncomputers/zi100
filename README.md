@@ -67,7 +67,6 @@ Fields accepted by the camera creation endpoint:
 - `transport`
 - `resolution`
 - `ppe`
-- `face_recog`
 - `inout_count`
 - `reverse`
 - `show`
@@ -441,7 +440,6 @@ The repository contains the following files:
 
 - `templates/*.html` – Jinja2 templates for the web UI.
 - `templates/partials/header.html` and `footer.html` – shared layout pieces.
-- `templates/face_search.html` – standalone template used for the Face DB search form.
 
 ### static
 
