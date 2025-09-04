@@ -1,0 +1,39 @@
+{% set cfg = cfg or {} %}
+<li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
+<li class="nav-item ms-lg-3"><a class="nav-link" href="/alerts">Email/Alerts</a></li>
+{#
+  Only show visitor-management links when both the feature flag and the
+  corresponding license capability are enabled.  Using ``cfg.get`` avoids
+  attribute errors if the nested dictionaries are missing and makes the
+  condition resilient to runtime test modifications of the global config.
+#}
+{% set has_vms = cfg.get('features', {}).get('visitor_mgmt') and cfg.get('license_info', {}).get('features', {}).get('visitor_mgmt') %}
+{% set role = request.session.get('user', {}).get('role') %}
+{% if has_vms %}
+  <li class="nav-item ms-lg-3"><a class="nav-link" href="/vms">VMS</a></li>
+{% endif %}
+<li class="nav-item dropdown ms-lg-3">
+  <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button"
+     data-bs-toggle="dropdown" aria-expanded="false">Reports</a>
+  <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="reportsDropdown">
+    <li><a class="dropdown-item" href="/report">Entry Exit Report</a></li>
+    <li><a class="dropdown-item" href="/ppe_report">PPE Report</a></li>
+  </ul>
+</li>
+<li class="nav-item ms-lg-3"><a class="nav-link" href="/cameras">Cameras</a></li>
+<li class="nav-item ms-lg-3"><button class="btn btn-sm btn-outline-light dark-toggle"><i class="bi-moon"></i></button></li>
+<li class="nav-item dropdown ms-lg-3">
+  <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+     data-bs-toggle="dropdown" aria-expanded="false">Profile</a>
+  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="profileDropdown">
+    <li><a class="dropdown-item" href="/profile">My Profile</a></li>
+    <li><a class="dropdown-item" href="/settings">Settings</a></li>
+    <li><a class="dropdown-item" href="/admin/users">User Management</a></li>
+    <li><a class="dropdown-item" href="/feedback">Feedback</a></li>
+    <li><a class="dropdown-item" href="/help">Help</a></li>
+    <li><a class="dropdown-item" href="/contact">Contact Us</a></li>
+    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+
+  </ul>
+</li>
+

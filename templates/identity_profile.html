@@ -1,0 +1,35 @@
+<!-- Purpose: identity profile page -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Identity Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+    {% include 'partials/header.html' %}
+    <div class="container py-4" id="identityProfile" data-id="{{ identity_id }}">
+        <h1 class="h4 mb-4">Identity Profile</h1>
+        <div class="mb-3">
+            <label for="identityName" class="form-label">Name</label>
+            <input id="identityName" class="form-control" type="text" />
+        </div>
+        <div class="mb-3">
+            <label for="identityCompany" class="form-label">Company</label>
+            <input id="identityCompany" class="form-control" type="text" />
+        </div>
+        <div class="mb-3">
+            <label for="identityTags" class="form-label">Tags</label>
+            <input id="identityTags" class="form-control" type="text" />
+        </div>
+        <button id="saveIdentity" class="btn btn-primary mb-4">Save</button>
+        <h2 class="h5">Faces</h2>
+        <div id="faceGallery" class="d-flex flex-wrap gap-2 mb-4"></div>
+        <h2 class="h5">Visits</h2>
+        <ul id="visitTimeline" class="list-group mb-4"></ul>
+        <h2 class="h5">Cameras</h2>
+        <ul id="cameraList" class="list-group"></ul>
+    </div>
+    <script src="/static/js/identity_profile.js"></script>
+</body>
+</html>

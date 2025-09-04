@@ -1,0 +1,83 @@
+.vms-body { padding-top:3.5rem; }
+.chart-card .card-body canvas{max-height:15rem}
+@media (min-width:62rem){.chart-card{max-height:17.5rem;}}
+@media (max-width:576px){.chart-card .card-body canvas{max-height:11.25rem!important}}
+.table-responsive thead th{position:sticky;top:0;z-index:1;background:var(--sci-bg);color:var(--sci-text)}
+.recent-photo{width:3.5rem;object-fit:cover;border-radius:.25rem}
+#recentVisitorsSection .spinner-border{width:3rem;height:3rem}
+/* Sidebar styles */
+.sidebar{
+  height:calc(100vh - 3.5rem);
+  overflow-y:auto;
+  background-color:#f8f9fa;
+  color:#212529;
+  flex-shrink:0
+}
+#mainNav{
+  transition:top .3s;
+}
+#mainNav.nav-hidden{
+  top:-3.5rem;
+}
+
+footer{
+  margin-top:auto;
+}
+.sidebar .nav-link{
+  color:inherit;
+  border-left:0.1875rem solid transparent;
+  transition:background-color .3s,border-color .3s;
+  padding:.5rem 1rem;
+  border-radius:.25rem;
+  margin-bottom:.25rem
+}
+.sidebar .nav-link:hover{background-color:rgba(0,0,0,.05)}
+.sidebar .nav-link.active{
+  background-color:#e9ecef;
+  border-left-color:var(--bs-primary);
+  font-weight:500
+}
+@media (max-width:991.98px){
+  .sidebar{height:auto;min-height:calc(100vh - 3.5rem)}
+}
+@media (max-width:576px){.card{margin-bottom:1rem}}
+@media (max-width:576px){.recent-photo{width:2.5rem}}
+/* Buttons */
+.btn{font-weight:500}
+.btn+.btn{margin-left:.5rem}
+#stepTabs,#reportTabs,#faceTabs,#inviteTabs{flex-wrap:nowrap;overflow-x:auto;font-size:.9rem}
+
+/* TomSelect adjustments */
+.ts-wrapper{width:100%;}
+.ts-wrapper .ts-control{
+  width:100%;
+  font-size:1rem;
+  border:var(--bs-border-width) solid var(--bs-border-color);
+  border-radius:var(--bs-border-radius);
+}
+
+#searchTab{position:relative}
+.search-loader{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.6);
+  z-index:1000;
+}
+.search-loader .spinner-border{
+  width:4rem;
+  height:4rem;
+  border-width:.5rem;
+  color:var(--sci-accent);
+  box-shadow:0 0 15px var(--sci-accent);
+}
+
+/* Form section headings */
+.form-section-title {
+  font-size:1.25rem;
+  font-weight:600;
+  margin-top:1rem;
+  margin-bottom:.5rem;
+}

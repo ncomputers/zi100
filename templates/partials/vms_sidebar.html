@@ -1,0 +1,82 @@
+{% macro menu_items() %}
+  {# Only render the VMS menu when both the feature flag and
+     the corresponding license capability are enabled. ``cfg.get``
+     guards against missing nested dictionaries. #}
+  {% set has_vms = cfg.get('features', {}).get('visitor_mgmt') and
+                   cfg.get('license_info', {}).get('features', {}).get('visitor_mgmt') %}
+  {% set role = request.session.get('user', {}).get('role') %}
+  {% if has_vms %}
+  <ul class="nav flex-column w-100 mb-0">
+
+    <li class="nav-item">
+      <a class="nav-link sidebar-link d-flex align-items-center gap-2" href="/vms">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link sidebar-link d-flex align-items-center gap-2" href="/vms/create">
+        <i class="bi bi-file-earmark-plus"></i> Create Gate Pass
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link sidebar-link d-flex align-items-center gap-2" href="/pending-requests">
+        <i class="bi bi-inbox"></i> Gate Pass Requests
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link sidebar-link d-flex align-items-center gap-2" href="/visit_requests/pending">
+        <i class="bi bi-person-lines-fill"></i> Visit Requests
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link sidebar-link d-flex align-items-center gap-2" href="/gatepass/list">
+        <i class="bi bi-list-check"></i> Manage Gate Passes
+      </a>
+    </li>
+    {% if role in ['viewer', 'admin'] %}
+    <li class="nav-item">
+      <a class="nav-link sidebar-link d-flex align-items-center gap-2" href="/invite">
+        <i class="bi bi-envelope-plus"></i> Invitation
+      </a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link sidebar-link d-flex align-items-center gap-2" href="/visitor_report">
+        <i class="bi bi-people"></i> Visitor Report
+      </a>
+    </li>
+  </ul>
+  {% endif %}
+{% endmacro %}
+
+<nav class="col-md-2 sidebar d-none d-md-block p-2">
+  {{ menu_items() }}
+</nav>
+
+<div class="offcanvas offcanvas-start d-md-none" id="sideMenu">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Menu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    {{ menu_items() }}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const menu = document.getElementById('sideMenu');
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      if (link.getAttribute('href') === location.pathname) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      }
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          const instance = bootstrap.Offcanvas.getInstance(menu);
+          instance?.hide();
+        }
+      });
+    });
+  });
+</script>

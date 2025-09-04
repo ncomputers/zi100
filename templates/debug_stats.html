@@ -1,0 +1,50 @@
+<!-- Purpose: debug stats template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <title>Stats Debug</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:2rem;}
+    pre{background:#f0f0f0;padding:1rem;}
+  </style>
+</head>
+<body>
+<!-- ===== Section: Debug Content ===== -->
+<h1>Stats Debug</h1>
+<div>GStreamer loaded: {{ 'yes' if gst_available else 'no' }}</div>
+<div>Status: <span id="conn">connecting</span> | Count: <span id="count">0</span> | Last: <span id="last">-</span></div>
+<h3>Camera Info</h3>
+<pre id="cams">Loading...</pre>
+<pre id="stats">Waiting...</pre>
+<script>
+const box=document.getElementById('stats');
+const conn=document.getElementById('conn');
+const cnt=document.getElementById('count');
+const last=document.getElementById('last');
+let total=0;
+let es;
+function connect(){
+  es=new EventSource('/sse/stats?stream=1');
+  es.onopen=()=>{conn.textContent='open'};
+  es.onmessage=e=>{
+    total++;
+    cnt.textContent=total;
+    last.textContent=new Date().toLocaleTimeString();
+    try{box.textContent=JSON.stringify(JSON.parse(e.data),null,2);}catch{}
+  };
+  es.onerror=()=>{
+    conn.textContent='error';
+    es.close();
+    setTimeout(connect,5000);
+  };
+}
+connect();
+fetch('/api/camera_info').then(r=>r.json()).then(d=>{
+  const lines=d.cameras.map(c=>`${c.id}: ${c.name} - ${c.stream_status||'ok'} ${c.stream_error||''}`);
+  document.getElementById('cams').textContent=lines.join('\n');
+});
+</script>
+</body>
+</html>

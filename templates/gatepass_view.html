@@ -1,0 +1,35 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gate Pass</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/gatepass.css') }}"
+    />
+  </head>
+  <body class="vms-body layout-id-card">
+    <div
+      class="container d-flex flex-column justify-content-center align-items-center"
+      id="pass"
+    >
+      {% set show_card_signature = false %}
+
+      {% with rec=card, qr_img=qr_img %}
+
+        {% include 'partials/gatepass_card.html' %}
+      {% endwith %}
+    </div>
+    <div class="gp-view-actions text-center mt-3 no-print">
+      <button class="btn btn-secondary" onclick="window.print()">Print</button>
+      <a
+        class="btn btn-primary"
+          href="{{ url_for('gatepass_print', gate_id=card.gate_id) }}?pdf=1"
+
+        >Download PDF</a
+      >
+
+    </div>
+  </body>
+</html>

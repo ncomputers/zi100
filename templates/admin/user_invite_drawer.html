@@ -1,0 +1,65 @@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="inviteDrawer" aria-labelledby="inviteDrawerLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="inviteDrawerLabel">Invite User</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <form id="inviteForm" class="d-flex flex-column h-100">
+      <div class="mb-3">
+        <label for="inviteEmail" class="form-label">Email <span class="text-danger">*</span></label>
+        <input type="email" class="form-control" id="inviteEmail" name="email" required>
+        <div class="form-text">We'll send an invite to this address.</div>
+      </div>
+      <div class="mb-3">
+        <label for="inviteName" class="form-label">Name</label>
+        <input type="text" class="form-control" id="inviteName" name="name">
+      </div>
+      <div class="mb-3">
+        <label for="invitePhone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="invitePhone" name="phone" pattern="\+?[0-9\- ]{7,}">
+        <div class="invalid-feedback">Enter a valid phone number.</div>
+      </div>
+      <div class="mb-3">
+        <span class="form-label d-block mb-2">Role</span>
+        <div class="row row-cols-1 g-2" id="roleCards">
+          {% for r in roles %}
+          <div class="col">
+            <div class="form-check border rounded p-3 h-100">
+              <input class="form-check-input" type="radio" name="role" id="role{{ loop.index }}" value="{{ r }}" {% if loop.first %}checked{% endif %}>
+              <label class="form-check-label" for="role{{ loop.index }}">
+                <div class="fw-bold">{{ r|capitalize }}</div>
+                <small class="text-muted">{{ r|capitalize }} access level</small>
+              </label>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label d-block" for="moduleSearch">Modules</label>
+        <input type="search" class="form-control mb-2" id="moduleSearch" placeholder="Search modules">
+        <div class="mb-2">
+          <button type="button" class="btn btn-sm btn-link p-0 me-2" id="selectAllModules">Select all</button>
+          <button type="button" class="btn btn-sm btn-link p-0" id="clearModules">Select none</button>
+        </div>
+        <div id="moduleList" class="overflow-auto" style="max-height:150px;">
+          {% for m in modules %}
+          <div class="form-check">
+            <input class="form-check-input moduleCheck" type="checkbox" value="{{ m }}" id="mod{{ loop.index }}" name="modules">
+            <label class="form-check-label" for="mod{{ loop.index }}">{{ m }}</label>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="form-text">Select modules the user can access.</div>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="require2fa" name="require_2fa">
+        <label class="form-check-label" for="require2fa">Require 2FA</label>
+      </div>
+      <div class="mt-auto pt-3 border-top">
+        <button type="submit" class="btn btn-primary me-2" id="inviteSubmit">Send Invite</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" id="inviteCancel">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gate Pass</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/gatepass.css') }}" />
+  </head>
+  {% set layout = print_layout or request.app.state.config.get('branding', {}).get('print_layout', 'A5') %}
+  <body class="vms-body layout-{{ layout|lower|replace(' ', '-') }}">
+    <div class="container" id="pass">
+      {% set show_card_signature = false %}
+      {% with rec=card, cfg=cfg, qr_img=qr_img %}
+        {% include 'partials/gatepass_card.html' %}
+      {% endwith %}
+    </div>
+  </body>
+
+</html>

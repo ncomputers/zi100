@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Host Verification</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+<div class="container">
+  <h3 class="mb-3">Host Verification</h3>
+  <p>Visitor: <strong>{{ rec.name }}</strong></p>
+  <form method="post">
+    <div class="mb-3">
+      <label for="host_pass" class="form-label">Host Password or Token</label>
+      <input type="text" class="form-control" id="host_pass" name="host_pass" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm</button>
+  </form>
+</div>
+</body>
+</html>

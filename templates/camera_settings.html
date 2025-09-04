@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container mt-4">
+    <h1 class="mb-4">Camera {{cam.id}} Settings</h1>
+    <form id="camForm">
+        <div class="mb-3">
+            <label class="form-label">Stream URL</label>
+            <input id="url" class="form-control" value="{{cam.url}}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Backend</label>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="backend" id="backendGst" value="gstreamer" {{ 'checked' if cam.backend != 'ffmpeg' else '' }}>
+                    <label class="form-check-label" for="backendGst">GStreamer</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="backend" id="backendFfmpeg" value="ffmpeg" {{ 'checked' if cam.backend == 'ffmpeg' else '' }}>
+                    <label class="form-check-label" for="backendFfmpeg">FFmpeg</label>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">FFmpeg Flags</label>
+            <textarea id="ffmpegFlags" class="form-control" rows="3">{{cam.ffmpeg_flags or ''}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Pipeline Profile</label>
+            <input id="profile" class="form-control" value="{{cam.profile or ''}}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="readyFrames">Frames required before stream is considered ready</label>
+            <input id="readyFrames" type="number" class="form-control" value="{{cam.ready_frames or ''}}" placeholder="Minimum frames for readiness">
+            <small class="form-text text-muted">Specify how many frames must be received before the system treats the stream as ready.</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="readyDuration">Seconds of continuous frames required for readiness</label>
+            <input id="readyDuration" type="number" step="0.1" class="form-control" value="{{cam.ready_duration or ''}}" placeholder="Stable duration in seconds">
+            <small class="form-text text-muted">The stream must remain stable for at least this duration before it is considered ready.</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="readyTimeout">Maximum wait time for stream readiness (s)</label>
+            <input id="readyTimeout" type="number" step="0.1" class="form-control" value="{{cam.ready_timeout or ''}}" placeholder="Timeout in seconds">
+            <small class="form-text text-muted">Stop waiting for readiness after this many seconds.</small>
+        </div>
+        <button id="save" class="btn btn-primary" type="submit">Save</button>
+    </form>
+</div>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="resultToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">Saved</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+<script type="module">
+const form = document.getElementById('camForm');
+const toastEl = document.getElementById('resultToast');
+const toastBody = toastEl.querySelector('.toast-body');
+function showToast(msg, success){
+  toastEl.classList.remove('text-bg-success','text-bg-danger');
+  toastEl.classList.add(success ? 'text-bg-success' : 'text-bg-danger');
+  toastBody.textContent = msg;
+  bootstrap.Toast.getOrCreateInstance(toastEl).show();
+}
+function setDisabled(dis){
+  form.querySelectorAll('input, textarea, button').forEach(el=>el.disabled=dis);
+}
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  setDisabled(true);
+  const url = document.getElementById('url').value;
+  const backend = document.querySelector('input[name="backend"]:checked').value;
+  const flags = document.getElementById('ffmpegFlags').value;
+  const profile = document.getElementById('profile').value;
+  const readyTimeout = document.getElementById('readyTimeout').value;
+  const readyFrames = document.getElementById('readyFrames').value;
+  const readyDuration = document.getElementById('readyDuration').value;
+  const payload = {url, backend, ffmpeg_flags: flags, profile};
+  if(readyTimeout) payload.ready_timeout = parseFloat(readyTimeout);
+  if(readyFrames) payload.ready_frames = parseInt(readyFrames);
+  if(readyDuration) payload.ready_duration = parseFloat(readyDuration);
+  try {
+    const res = await fetch('/camera/{{cam.id}}', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    showToast(res.ok ? 'Saved' : 'Error saving', res.ok);
+  } catch {
+    showToast('Error saving', false);
+  } finally {
+    setDisabled(false);
+  }
+});
+</script>
+</body>
+</html>

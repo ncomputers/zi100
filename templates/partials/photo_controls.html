@@ -1,0 +1,29 @@
+{% set prefix = prefix|default('') %}
+{% set id_prefix = prefix ~ '_' if prefix else '' %}
+<div class="mb-2 form-check text-start">
+  <input class="form-check-input" type="checkbox" id="{{ id_prefix }}noPhoto">
+  <label class="form-check-label" for="{{ id_prefix }}noPhoto">No photo available</label>
+</div>
+<div class="text-center photo-controls" data-prefix="{{ prefix }}" id="{{ id_prefix }}photoControls">
+  <div id="{{ id_prefix }}cameraError" class="text-danger mb-2"></div>
+  <div id="{{ id_prefix }}photoBox" class="photo-placeholder">
+    <video id="{{ id_prefix }}preview" class="d-none"></video>
+    <img id="{{ id_prefix }}photoPreview" class="d-none img-fluid" alt="Photo preview">
+    <div class="photo-actions">
+      <button class="btn btn-primary me-2" type="button" id="{{ id_prefix }}capturePhoto">Capture Photo</button>
+      <button class="btn btn-secondary" type="button" id="{{ id_prefix }}uploadPhoto">Upload Photo</button>
+    </div>
+  </div>
+  <div class="mt-2 d-none" id="{{ id_prefix }}brightnessBox">
+    <label for="{{ id_prefix }}brightness" class="form-label">Brightness</label>
+    <input type="range" class="form-range" id="{{ id_prefix }}brightness" min="0.5" max="2" step="0.1" value="1" data-default="1">
+  </div>
+  <input type="file" id="{{ id_prefix }}upload" class="d-none" accept="image/*" capture="environment">
+  <input type="hidden" name="{{ input_name|default('photo') }}" id="{{ id_prefix }}{{ input_id|default('photoInput') }}" {{ 'required' if required|default(true) else '' }}>
+  <input type="hidden" name="photo_source" id="{{ id_prefix }}photoSource" value="none">
+  <div class="mt-2 d-none" id="{{ id_prefix }}afterControls">
+    <button class="btn btn-sm btn-secondary me-2" type="button" id="{{ id_prefix }}retake">Retake</button>
+    <button class="btn btn-sm btn-secondary" type="button" id="{{ id_prefix }}changePhoto">Change Photo</button>
+  </div>
+  <small class="form-text text-muted">Add the visitor’s photo using your webcam or upload from files. Max file size 500 KB.</small>
+</div>

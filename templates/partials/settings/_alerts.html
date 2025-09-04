@@ -1,0 +1,142 @@
+<div class="accordion-item">
+  <h2 class="accordion-header" id="alertHead">
+    <button
+      class="accordion-button collapsed"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#alert"
+      aria-expanded="false"
+    >
+      Alert Settings
+    </button>
+  </h2>
+  <div id="alert" class="accordion-collapse collapse">
+    <div class="accordion-body">
+      <div class="row row-cols-1 row-cols-md-2 g-3 mb-3">
+        {{ tc.toggle_card('emailEnabled','email_enabled','Enable Email Alerts',
+        cfg.email_enabled, attrs='data-bs-toggle="tooltip" title="Send notifications by email"') }}
+      </div>
+      <div id="smtpFields" class="mb-3">
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          <div class="col">
+            <label class="form-label">SMTP Host</label>
+            <input
+              class="form-control"
+              name="smtp_host"
+              value="{{cfg.email.smtp_host}}"
+            />
+            <div class="form-text">Mail server address.</div>
+          </div>
+          <div class="col">
+            <label class="form-label">Port</label>
+            <input
+              type="number"
+              class="form-control"
+              name="smtp_port"
+              value="{{cfg.email.smtp_port}}"
+            />
+            <div class="form-text">Typically 587 for TLS.</div>
+          </div>
+          <div class="col">
+            <label class="form-label">Username</label>
+            <input
+              class="form-control"
+              name="smtp_user"
+              value="{{cfg.email.smtp_user}}"
+            />
+            <div class="form-text">SMTP account username.</div>
+          </div>
+          <div class="col">
+            <label class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              name="smtp_pass"
+              placeholder="Leave blank to keep current password"
+            />
+            <div class="form-text">Leave blank to keep current password.</div>
+          </div>
+          <div class="col">
+            <label class="form-label">Use TLS</label>
+            <select class="form-select" name="use_tls">
+              <option
+                value="true"
+                {%
+                if
+                cfg.email.use_tls
+                %}selected{%
+                endif
+                %}
+              >
+                Yes
+              </option>
+              <option
+                value="false"
+                {%
+                if
+                not
+                cfg.email.use_tls
+                %}selected{%
+                endif
+                %}
+              >
+                No
+              </option>
+            </select>
+            <div class="form-text">Enable TLS for secure connection.</div>
+          </div>
+          <div class="col-12">
+            <div
+              class="form-text"
+              data-bs-toggle="tooltip"
+              title="Provide SMTP server address and credentials to send mail via username and password."
+            >
+              SMTP credentials are stored server-side.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">From Address</label>
+        <input
+          class="form-control"
+          name="from_addr"
+          value="{{cfg.email.from_addr}}"
+        />
+        <div class="form-text">Default sender address for emails.</div>
+      </div>
+      <div class="mb-3 d-none" id="emailTestSection">
+        <div class="input-group">
+          <input
+            type="email"
+            class="form-control"
+            id="testEmailRecipient"
+            placeholder="Test address"
+          />
+          <button class="btn btn-secondary" type="button" id="emailTestBtn">
+            Send Test Email
+          </button>
+        </div>
+        <div id="emailMsg" class="mt-2"></div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Anomaly Alerts</label>
+        <div class="form-text">Choose anomalies that trigger alert emails.</div>
+        <div class="row row-cols-1 row-cols-md-2 g-2">
+          {% for item in alert_items %} {{ tc.toggle_card('a' ~ loop.index,
+          'alert_anomalies', item.replace('no_','No ').replace('_',' '), item in
+          cfg.alert_anomalies, item) }} {% endfor %}
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Show Preview Boxes</label>
+        <div class="form-text">Select anomalies to highlight in previews.</div>
+        <div class="row row-cols-1 row-cols-md-2 g-2">
+          {% for item in preview_items %} {{ tc.toggle_card('p' ~ loop.index,
+          'preview_anomalies', item.replace('no_','No ').replace('_',' '), item
+          in cfg.preview_anomalies, item) }} {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

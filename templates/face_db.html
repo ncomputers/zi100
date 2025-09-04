@@ -1,0 +1,30 @@
+<!-- Purpose: minimal Face DB webcam detection page -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Face DB</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #video, #overlay { max-width: 100%; }
+        #overlay { position: absolute; top: 0; left: 0; }
+    </style>
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container mt-4">
+    <h1 class="mb-3">Face DB</h1>
+    <button id="addFaceBtn" class="btn btn-primary mb-3">Add Face</button>
+    <div id="controls" class="mb-3 d-none">
+        <button id="startBtn" class="btn btn-success me-2">Start</button>
+        <button id="stopBtn" class="btn btn-danger" disabled>Stop</button>
+    </div>
+    <div class="position-relative">
+        <video id="video" class="d-none border" autoplay muted playsinline></video>
+        <canvas id="overlay" class="d-none"></canvas>
+    </div>
+    <div id="status" class="mt-2 text-danger"></div>
+</div>
+<script src="/static/js/face_db_page.js"></script>
+</body>
+</html>

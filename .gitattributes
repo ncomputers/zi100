@@ -1,0 +1,2 @@
+# Auto-resolve merge conflicts for generated files by taking incoming changes
+package-lock.json merge=theirs

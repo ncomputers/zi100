@@ -1,0 +1,304 @@
+<!-- Purpose: cameras template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cameras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/app.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+<!-- ===== Section: Navbar ===== -->
+{% include 'partials/header.html' %}
+<!-- ===== Section: Main Content ===== -->
+<div class="container mt-4">
+    <h1 class="mb-4">Cameras</h1>
+    <div id="msg"></div>
+    <a href="/cameras/add" class="btn btn-primary mb-4">Add Camera</a>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+        <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>URL</th><th>Status</th><th>PPE</th><th>VMS</th><th>Face Recog</th><th>In/Out Count</th><th>Line</th><th>Orientation</th><th>Transport</th><th>Res</th><th>Rev</th><th>Enabled</th><th>Show</th><th>Actions</th></tr></thead>
+
+
+        <tbody id="camBody">
+        {% for c in cams %}
+        <tr data-id="{{c.id}}">
+            <td class="col-id">{{c.id}}</td>
+            <td class="col-name">{{c.name}}</td>
+            <td class="col-type">{{c.type}}</td>
+            <td class="col-url">{{c.url}}</td>
+            <td class="col-status">
+                {% if c.online %}
+                    <span class="badge bg-success">Online</span>
+                {% else %}
+                    {% if c.stream_error %}
+                        <span class="badge bg-danger" data-bs-toggle="tooltip" title="{{c.stream_error}}">
+                            {{ 'Timeout' if c.stream_status=='timeout' else 'Offline' }}
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger">{{ 'Timeout' if c.stream_status=='timeout' else 'Offline' }}</span>
+                    {% endif %}
+                {% endif %}
+            </td>
+
+            {% set locked = not cfg.features.ppe_detection %}
+            <td class="col-ppe">
+                {% if locked %}
+                    <i class="bi bi-lock-fill text-muted" data-bs-toggle="tooltip" title="PPE Detection not in license"></i>
+                {% else %}
+                    {% if c.ppe %}
+                        <input type="checkbox" data-feature="ppe_detection" class="form-check-input ppe-check" checked>
+                    {% else %}
+                        <input type="checkbox" data-feature="ppe_detection" class="form-check-input ppe-check">
+                    {% endif %}
+                {% endif %}
+            </td>
+            {% set locked = not cfg.features.visitor_mgmt %}
+            <td class="col-vms">
+                {% if locked %}
+                    <i class="bi bi-lock-fill text-muted" data-bs-toggle="tooltip" title="VMS not in license"></i>
+                {% else %}
+                    {% if c.visitor_mgmt %}
+                        <input type="checkbox" data-feature="visitor_mgmt" class="form-check-input vms-check" checked>
+                    {% else %}
+                        <input type="checkbox" data-feature="visitor_mgmt" class="form-check-input vms-check">
+                    {% endif %}
+                {% endif %}
+            </td>
+            {% set locked = not cfg.features.face_recognition %}
+            <td class="col-face">
+                {% if locked %}
+                    <i class="bi bi-lock-fill text-muted" data-bs-toggle="tooltip" title="Face Recog not in license"></i>
+                {% else %}
+                    {% if c.face_recognition %}
+                        <input type="checkbox" data-feature="face_recognition" class="form-check-input fr-check" checked>
+                    {% else %}
+                        <input type="checkbox" data-feature="face_recognition" class="form-check-input fr-check">
+                    {% endif %}
+                {% endif %}
+            </td>
+            {% set locked = not cfg.features.in_out_counting %}
+            <td class="col-count">
+                {% if locked %}
+                    <i class="bi bi-lock-fill text-muted" data-bs-toggle="tooltip" title="In/Out Counting not in license"></i>
+                {% else %}
+                    {% if 'in_count' in c.tasks %}
+                        <input type="checkbox" class="form-check-input count-check" checked>
+                    {% else %}
+                        <input type="checkbox" class="form-check-input count-check">
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td>
+                <select class="form-select form-select-sm line-select">
+
+                    {% if c.line_orientation=='vertical' %}
+                        <option value="vertical" selected>Vertical</option>
+                    {% else %}
+                        <option value="vertical">Vertical</option>
+                    {% endif %}
+                    {% if c.line_orientation=='horizontal' %}
+                        <option value="horizontal" selected>Horizontal</option>
+                    {% else %}
+                        <option value="horizontal">Horizontal</option>
+                    {% endif %}
+                </select>
+            </td>
+            <td>
+                <select class="form-select form-select-sm orient-select">
+                    {% if c.orientation=='vertical' %}
+                        <option value="vertical" selected>Vertical</option>
+                    {% else %}
+                        <option value="vertical">Vertical</option>
+                    {% endif %}
+                    {% if c.orientation=='horizontal' %}
+                        <option value="horizontal" selected>Horizontal</option>
+                    {% else %}
+                        <option value="horizontal">Horizontal</option>
+                    {% endif %}
+                </select>
+            </td>
+            <td>
+                <select class="form-select form-select-sm transport-select">
+                    {% if c.rtsp_transport=='auto' %}
+                        <option value="auto" selected>Auto</option>
+                    {% else %}
+                        <option value="auto">Auto</option>
+                    {% endif %}
+                    {% if c.rtsp_transport=='tcp' %}
+                        <option value="tcp" selected>TCP</option>
+                    {% else %}
+                        <option value="tcp">TCP</option>
+                    {% endif %}
+                    {% if c.rtsp_transport=='udp' %}
+                        <option value="udp" selected>UDP</option>
+                    {% else %}
+                        <option value="udp">UDP</option>
+                    {% endif %}
+                </select>
+            </td>
+            <td>
+
+                <select class="form-select form-select-sm res-select">
+                    {% if c.resolution=='original' %}
+                        <option value="original" selected>Original</option>
+                    {% else %}
+                        <option value="original">Original</option>
+                    {% endif %}
+                    {% if c.resolution=='480p' %}
+                        <option value="480p" selected>480p</option>
+                    {% else %}
+                        <option value="480p">480p</option>
+                    {% endif %}
+                    {% if c.resolution=='720p' %}
+                        <option value="720p" selected>720p</option>
+                    {% else %}
+                        <option value="720p">720p</option>
+                    {% endif %}
+                    {% if c.resolution=='1080p' %}
+                        <option value="1080p" selected>1080p</option>
+                    {% else %}
+                        <option value="1080p">1080p</option>
+                    {% endif %}
+                </select>
+            </td>
+            <td class="col-rev">
+                {% if c.reverse %}
+                    <input type="checkbox" class="form-check-input reverse-check" checked>
+                {% else %}
+                    <input type="checkbox" class="form-check-input reverse-check">
+                {% endif %}
+            </td>
+            <td class="col-enabled">
+                {% if c.enabled %}
+                    <input type="checkbox" class="form-check-input enabled-check" data-id="{{c.id}}" checked>
+                {% else %}
+                    <input type="checkbox" class="form-check-input enabled-check" data-id="{{c.id}}">
+                {% endif %}
+            </td>
+            <td class="col-show">
+                {% if c.show %}
+                    <input type="checkbox" class="form-check-input toggle" data-id="{{c.id}}" checked>
+                {% else %}
+                    <input type="checkbox" class="form-check-input toggle" data-id="{{c.id}}">
+                {% endif %}
+            </td>
+            <td class="col-actions">
+                <button class="btn btn-secondary btn-sm preview-btn" data-url="{{c.url}}">Preview</button>
+                <button class="btn btn-success btn-sm save-btn" data-id="{{c.id}}">Save</button>
+                <button class="btn btn-danger btn-sm delete-btn" data-id="{{c.id}}">Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    <h5 class="mt-4">Camera Health</h5>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead><tr><th>ID</th><th>Latency (ms)</th><th>Last Frame</th><th>Packet Loss</th></tr></thead>
+            <tbody>
+            {% for c in cams %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td>{{ (c.latency * 1000)|round(0) }}</td>
+                <td>{{ c.frame_ts|int }}</td>
+                <td>{{ c.packet_loss }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mb-2">
+        <a href="/license" class="badge bg-secondary text-decoration-none" data-bs-toggle="tooltip" title="See licensing options">
+            <i class="bi bi-lock-fill"></i> Feature locked by license
+        </a>
+        <small class="text-muted ms-2">Enter a license key to enable locked features.</small>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mb-3">
+        <button class="btn btn-info" id="exportCams">Export</button>
+        <label class="btn btn-info mb-0">
+            Import <input type="file" id="importCams" hidden>
+        </label>
+    </div>
+    <div class="mt-4">
+        <h5>Suggestions</h5>
+        <ul>
+            <li>Organize cameras by location for easier monitoring.</li>
+            <li>Add authentication to restrict camera management access.</li>
+        </ul>
+    </div>
+    <a href="/" class="btn btn-secondary">Back</a>
+</div>
+<script>
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el=>new bootstrap.Tooltip(el));
+
+document.getElementById('camBody').addEventListener('click',async e=>{
+  if(e.target.classList.contains('delete-btn')){
+    const id=e.target.dataset.id;
+    const r=await fetch('/cameras/'+id,{method:'DELETE'});
+    const d=await r.json();
+    if(d.deleted){
+      e.target.closest('tr').remove();
+    }
+  }
+  if(e.target.classList.contains('toggle')){
+    const id=e.target.dataset.id;
+    const r=await fetch('/cameras/'+id+'/show',{method:'PATCH'});
+    const d=await r.json();
+    if(d.error){alert('Error');}
+  }
+  if(e.target.classList.contains('enabled-check')){
+    const id=e.target.dataset.id;
+    const r=await fetch('/cameras/'+id+'/enabled',{method:'PATCH'});
+    const d=await r.json();
+    if(d.error){alert('Error');}
+  }
+  if(e.target.classList.contains('save-btn')){
+    const id=e.target.dataset.id;
+    const row=e.target.closest('tr');
+    const lineOrient=row.querySelector('.line-select').value;
+    const orient=row.querySelector('.orient-select').value;
+    const transport=row.querySelector('.transport-select').value;
+    const res=row.querySelector('.res-select').value;
+    const reverse=row.querySelector('.reverse-check').checked;
+    const ppe=row.querySelector('[data-feature="ppe_detection"]')?.checked;
+    const visitor=row.querySelector('[data-feature="visitor_mgmt"]')?.checked;
+    const fr=row.querySelector('[data-feature="face_recognition"]')?.checked;
+    const counting=row.querySelector('.count-check')?.checked;
+    await fetch('/cameras/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({ppe,visitor_mgmt:visitor,face_recognition:fr,counting,reverse,line_orientation:lineOrient,orientation:orient,transport,resolution:res})});
+
+    document.getElementById('msg').innerHTML='<div class="alert alert-success">Saved</div>';
+  }
+  if(e.target.classList.contains('preview-btn')){
+    const url=e.target.dataset.url;
+    const r=await fetch('/cameras/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+    if(r.ok){
+      const d=await r.json();
+      if(d.image){
+        const imgUrl='data:image/jpeg;base64,'+d.image;
+        window.open(imgUrl,'_blank');
+      } else alert('Error');
+    }else alert('Error');
+  }
+});
+
+document.getElementById('exportCams').addEventListener('click',()=>{
+  window.location='/cameras/export';
+});
+
+document.getElementById('importCams').addEventListener('change',async e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  try{
+    const data=JSON.parse(await file.text());
+    const r=await fetch('/cameras/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const d=await r.json();
+    if(d.imported){location.reload();}
+  }catch(err){alert('Invalid file');}
+});
+</script>
+{% include 'partials/footer.html' %}
+</body>
+</html>

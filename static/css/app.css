@@ -1,0 +1,29 @@
+/* Cameras table layout */
+.cameras-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.cameras-table th,
+.cameras-table td {
+  white-space: nowrap;
+}
+
+.cameras-table .col-id { width: 50px; }
+.cameras-table .col-name { width: 120px; }
+.cameras-table .col-type { width: 100px; }
+.cameras-table .col-url { width: 200px; }
+.cameras-table .col-status { width: 90px; }
+.cameras-table .col-latency { width: 90px; }
+.cameras-table .col-frame { width: 90px; }
+.cameras-table .col-loss { width: 90px; }
+.cameras-table .col-ppe { width: 70px; }
+.cameras-table .col-vms { width: 70px; }
+.cameras-table .col-face { width: 100px; }
+.cameras-table .col-count { width: 120px; }
+.cameras-table .col-orient { width: 110px; }
+.cameras-table .col-res { width: 80px; }
+.cameras-table .col-rev { width: 70px; }
+.cameras-table .col-enabled { width: 90px; }
+.cameras-table .col-show { width: 70px; }
+.cameras-table .col-actions { width: 150px; }

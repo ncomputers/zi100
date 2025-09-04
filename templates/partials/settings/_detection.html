@@ -1,0 +1,39 @@
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="detHead">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#det" aria-expanded="false">Detection Settings</button>
+                </h2>
+                <div id="det" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            <div class="col">
+                                <label class="form-label">Detection Threshold</label>
+                                <input type="number" step="0.01" name="conf_thresh" class="form-control" value="{{cfg.conf_thresh}}">
+                                <div class="form-text">Minimum confidence to register detections.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Helmet Threshold</label>
+                                <input type="number" step="0.01" name="helmet_conf_thresh" class="form-control" value="{{cfg.helmet_conf_thresh}}">
+                                <div class="form-text">Confidence required for helmet detection.</div>
+                            </div>
+                            {{ tc.toggle_card('detectColor','detect_helmet_color','Detect Helmet Color', cfg.detect_helmet_color, attrs='data-bs-toggle="tooltip" title="Identify helmet colors"') }}
+                            {{ tc.toggle_card('trackMisc','track_misc','Log Misc Items', cfg.track_misc, attrs='data-bs-toggle="tooltip" title="Record non-standard objects"') }}
+                            <div class="col-12">
+                                <label class="form-label">Objects to Count</label>
+                                <div class="row row-cols-1 row-cols-md-2 g-2">
+                                    {% for item in count_options %}
+                                        {{ tc.toggle_card('o' ~ loop.index, 'track_objects', item.title(), item in cfg.track_objects, item) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Track PPE Items</label>
+                                <div class="row row-cols-1 row-cols-md-2 g-2">
+                                    {% for item in ppe_items %}
+                                        {{ tc.toggle_card('t' ~ loop.index, 'track_ppe', item, item in cfg.track_ppe, item) }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>

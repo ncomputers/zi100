@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+:root {
+  --sci-bg: #0a0a0a;
+  --sci-text: #e0e0e0;
+  --sci-accent: #0ff;
+}
+
+.sci-fi-theme {
+  background-color: var(--sci-bg);
+  color: var(--sci-text);
+  font-family: 'Orbitron', sans-serif;
+}
+
+.sci-fi-nav {
+  box-shadow: 0 0 10px var(--sci-accent);
+}
+
+.sci-fi-tabs .nav-link {
+  color: var(--sci-accent);
+  transition: color .3s, box-shadow .3s;
+}
+.sci-fi-tabs .nav-link.active {
+  color: var(--sci-text);
+  box-shadow: 0 0 5px var(--sci-accent);
+}
+
+.sci-fi-form .form-control,
+.sci-fi-form .form-range {
+  background-color: #1a1a1a;
+  border-color: var(--sci-accent);
+  color: var(--sci-text);
+}
+
+.sci-fi-btn.btn {
+  background-color: var(--sci-accent);
+  border-color: var(--sci-accent);
+  color: #000;
+  transition: box-shadow .3s;
+}
+.sci-fi-btn.btn:hover {
+  box-shadow: 0 0 10px var(--sci-accent);
+}
+.sci-fi-btn.btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+

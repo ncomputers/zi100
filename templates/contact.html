@@ -1,0 +1,27 @@
+<!-- Purpose: contact info page -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/contact.css') }}">
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container mt-4 contact-grid">
+  <div class="contact-info">
+    <img src="{{ url_for('static', path='logo1.png') }}" alt="logo" class="contact-logo mb-3">
+    <h2>Z Eye System</h2>
+    <p class="role">Visitor Support</p>
+    <p>Email: <a href="mailto:admin@rapidcorp.in">admin@rapidcorp.in</a></p>
+    <p>Phone: <a href="tel:+91-9828519299">+91-9828519299</a></p>
+  </div>
+  <div class="contact-details">
+    <h2>Contact Us</h2>
+    <p>For assistance, email <a href="mailto:admin@rapidcorp.in">admin@rapidcorp.in</a> or call our support line.</p>
+  </div>
+</div>
+</body>
+</html>
+

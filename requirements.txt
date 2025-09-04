@@ -1,0 +1,50 @@
+# NOTE: The following must be installed via apt (NOT pip):
+# sudo apt install -y python3-gi gir1.2-gstreamer-1.0
+
+# Optional for GStreamer CLI tools (also apt):
+# sudo apt install -y gstreamer1.0-tools gstreamer1.0-plugins-{base,good,bad,ugly} gstreamer1.0-libav
+
+
+torch
+torchvision
+torchaudio
+onnxruntime-gpu
+
+# Other Python dependencies
+fastapi
+starlette
+uvicorn
+redis
+fakeredis
+opencv-python-headless
+ultralytics
+deep-sort-realtime
+loguru
+jinja2
+openpyxl
+websockets
+python-multipart
+imagehash
+Pillow
+qrcode[pil]
+passlib
+pytest
+setuptools<81
+psutil
+numpy<2
+authlib
+insightface
+weasyprint
+httpx
+email-validator
+faiss-cpu
+itsdangerous
+pydantic-settings
+fastapi-csrf-protect
+ffmpeg-python
+beautifulsoup4
+pydantic
+google-auth
+google-auth-oauthlib
+google-api-python-client
+keyring

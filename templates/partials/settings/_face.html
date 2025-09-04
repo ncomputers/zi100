@@ -1,0 +1,67 @@
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faceHead">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#face" aria-expanded="false">Face Recognition</button>
+                </h2>
+        <div id="face" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                {% set vms_licensed = cfg.license_info.features.visitor_mgmt if cfg.license_info else True %}
+                {% set fr_licensed = cfg.license_info.features.face_recognition if cfg.license_info else True %}
+                <p class="text-muted">
+                    See <a href="/docs/modules/modules_face_engine_utils.md#thresholds-defaults-and-usage" target="_blank">face
+                    threshold documentation</a> for defaults and usage.
+                </p>
+                <h6>Face Counting</h6>
+                <div class="row row-cols-1 row-cols-md-2 g-3 mb-2">
+                    {{ tc.toggle_card('faceCountToggle','enable_face_counting','Enable Face Counting', cfg['enable_face_counting']) }}
+                </div>
+                <div class="mb-2">
+                            <label class="form-label">Counting Detection Confidence</label>
+                            <input class="form-control" type="number" step="0.01" name="face_count_conf" value="{{cfg.face_count_conf}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Counting Similarity Threshold</label>
+                            <input class="form-control" type="number" step="0.01" name="face_count_similarity" value="{{cfg.face_count_similarity}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Counting Min Face Size</label>
+                            <input class="form-control" type="number" name="face_count_min_size" value="{{cfg.face_count_min_size}}">
+                        </div>
+                        <h6 class="mt-3">Visitor Recognition</h6>
+                        <div class="row row-cols-1 row-cols-md-2 g-3 mb-2">
+                            {{ tc.toggle_card('faceRecToggle','enable_face_recognition','Enable Face Recognition', cfg['enable_face_recognition'], attrs='disabled data-bs-toggle="tooltip" title="Not licensed"' if not fr_licensed else '') }}
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor Match Threshold</label>
+                            <input class="form-control" type="number" step="0.01" name="face_match_thresh" value="{{cfg.face_match_thresh}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor Confidence Threshold</label>
+                            <input class="form-control" type="number" step="0.01" name="visitor_conf_thresh" value="{{cfg.visitor_conf_thresh}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor Similarity Threshold</label>
+                            <input class="form-control" type="number" step="0.01" name="visitor_sim_thresh" value="{{cfg.visitor_sim_thresh}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor Min Face Size</label>
+                            <input class="form-control" type="number" name="visitor_min_face_size" value="{{cfg.visitor_min_face_size}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor Blur Threshold</label>
+                            <input class="form-control" type="number" name="visitor_blur_thresh" value="{{cfg.visitor_blur_thresh}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor Size Threshold</label>
+                            <input class="form-control" type="number" name="visitor_size_thresh" value="{{cfg.visitor_size_thresh}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor FPS Skip</label>
+                            <input class="form-control" type="number" name="visitor_fps_skip" value="{{cfg.visitor_fps_skip}}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Visitor Model</label>
+                            <input class="form-control" name="visitor_model" value="{{cfg.visitor_model}}">
+                        </div>
+                    </div>
+                </div>
+            </div>

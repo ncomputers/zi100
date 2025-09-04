@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crowd-management-system"
+version = "0.1.0"
+authors = [{ name = "ncomputers" }]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "redis",
+    "opencv-python-headless",
+    "torch",
+    "onnxruntime-gpu",
+    "ultralytics",
+    "deep-sort-realtime",
+    "loguru",
+    "jinja2",
+    "openpyxl",
+    "websockets",
+    "python-multipart",
+    "imagehash",
+    "Pillow",
+    "qrcode[pil]",
+    "passlib",
+    "pytest",
+    "setuptools<81",
+    "psutil",
+    "numpy",
+    "authlib",
+    "insightface",
+    "weasyprint",
+    "httpx",
+    "email-validator",
+    "faiss-cpu",
+    "itsdangerous",
+    "pydantic-settings",
+    "fastapi-csrf-protect",
+    "ffmpeg-python",
+    "keyring",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core", "modules", "routers", "schemas", "utils"]

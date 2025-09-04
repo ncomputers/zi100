@@ -1,0 +1,57 @@
+<!-- Purpose: visitor register template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register Visitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+<!-- ===== Section: Navbar ===== -->
+{% include 'partials/header.html' %}
+<!-- ===== Section: Main Content ===== -->
+<div class="container mt-4">
+    <h1 class="mb-4">Register Visitor</h1>
+    <img src="data:image/jpeg;base64,{{ record.image }}" class="mb-3 img-fluid" style="width:10rem" alt="face"/>
+    <form method="post" action="/visitor_register">
+        <input type="hidden" name="face_id" value="{{ record.face_id }}">
+        <p><strong>Gatepass ID:</strong> {{ record.gate_id }}</p>
+        <div class="mb-2"><input class="form-control" name="name" placeholder="Name" list="regNameSuggestions" required><datalist id="regNameSuggestions"></datalist></div>
+        <div class="mb-2"><input class="form-control" name="phone" placeholder="Phone" list="regPhoneSuggestions"><datalist id="regPhoneSuggestions"></datalist></div>
+        <div class="mb-2"><input class="form-control" name="host" placeholder="Host"></div>
+        <div class="mb-2"><input class="form-control" name="purpose" placeholder="Purpose"></div>
+        <div class="mb-2">
+            <select class="form-select" name="visitor_type">
+                <option value="Official">Official</option>
+                <option value="Personal">Personal</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
+</div>
+<script>
+async function fetchSuggestions(prefix){
+  if(prefix.length<2) return [];
+  const resp=await fetch('/api/visitors/suggest?name_prefix='+encodeURIComponent(prefix));
+  return resp.ok?resp.json():[];
+}
+function updateLists(data){
+  const nl=document.getElementById('regNameSuggestions');
+  const pl=document.getElementById('regPhoneSuggestions');
+  nl.innerHTML='';
+  pl.innerHTML='';
+  data.forEach(it=>{
+    const n=document.createElement('option');n.value=it.name;nl.appendChild(n);
+    const p=document.createElement('option');p.value=it.phone;pl.appendChild(p);
+  });
+}
+const nameInput=document.querySelector('input[name="name"]');
+const phoneInput=document.querySelector('input[name="phone"]');
+nameInput.addEventListener('input',async e=>{updateLists(await fetchSuggestions(e.target.value));});
+phoneInput.addEventListener('input',async e=>{
+  const v=e.target.value.replace(/\D/g,'');
+  updateLists(await fetchSuggestions(v));
+});
+</script>
+</body>
+</html>

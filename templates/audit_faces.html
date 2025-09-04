@@ -1,0 +1,31 @@
+<!-- Purpose: audit faces template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Face Audit Log</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/site.css') }}">
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container py-4">
+    <h1 class="mb-4">Face Audit Log</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr>
+        </thead>
+        <tbody>
+        {% for a in actions %}
+            <tr>
+                <td>{{ a.time }}</td>
+                <td>{{ a.user }}</td>
+                <td>{{ a.action }}</td>
+                <td>{{ a.details }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

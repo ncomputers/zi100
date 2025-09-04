@@ -1,0 +1,351 @@
+html {
+  font-size: clamp(14px, 1.5vw, 16px);
+}
+
+/* ===== Theme Variables ===== */
+:root {
+  --bg-gradient: radial-gradient(circle at 25% 25%, #f0f4f8, #d9e2ec);
+  --header-gradient: linear-gradient(90deg, #2b5876, #4e4376);
+  --text-color: #212529;
+  --muted-color: #6c757d;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --radius: 0.75rem;
+  --gap: 1.25rem;
+  --ppe-helmet-color: #e74c3c;
+  --ppe-vest-color: #c0392b;
+}
+.dark-mode {
+  --bg-gradient: radial-gradient(circle at 25% 25%, #1e1e1e, #2a2a2a);
+  --header-gradient: linear-gradient(90deg, #0f2027, #203a43);
+  --text-color: #f8f9fa;
+  --muted-color: #adb5bd;
+  --card-bg: #2c2c2c;
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.8);
+  --ppe-helmet-color: #e74c3c;
+  --ppe-vest-color: #c0392b;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-color);
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+
+body:not(.login-page) {
+  padding-top: 3.5rem; /* offset for fixed navbar */
+}
+
+#navbar-logo {
+  max-height: 2.25rem;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Utility font size classes */
+.font-large {
+  font-size: 1.1rem;
+}
+@media (max-width: 576px) {
+  .font-small {
+    font-size: 0.9rem;
+  }
+}
+
+/* Utility animation classes */
+.fade-in {
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+.slide-up {
+  animation-name: slideInUp;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+/* ===== Navigation Bar ===== */
+#mainNav {
+  background: var(--header-gradient);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+  height: 3.5rem;
+}
+#mainNav .navbar-brand {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+#mainNav .nav-link {
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  color: #f8f9fa;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+#mainNav .nav-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-0.125rem);
+}
+
+/* Allow navigation links to wrap/stack when navbar collapses */
+#mainNav .navbar-nav {
+  flex-wrap: wrap;
+}
+
+/* ===== Stats Grid & Cards ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr));
+  gap: var(--gap);
+}
+.stat-box {
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  min-height: 8.125rem;
+  box-shadow: var(--card-shadow);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.stat-box:hover {
+  transform: scale(1.02);
+  box-shadow: var(--card-shadow-hover);
+}
+.stat-box i {
+  margin-bottom: 0.5rem;
+  transition: transform 0.2s;
+}
+.stat-box:hover i {
+  transform: scale(1.1);
+}
+.stat-title {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 0.35rem;
+}
+.stat-number {
+  font-weight: 700;
+  font-size: 2rem;
+}
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--muted-color);
+}
+.stat-trend {
+  font-size: 0.8125rem;
+  margin-top: 0.25rem;
+}
+
+/* Gradient background helpers */
+.gradient-green {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #fff;
+}
+.gradient-blue {
+  background: linear-gradient(135deg, #34495e, #2c3e50);
+  color: #fff;
+}
+.gradient-red {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #fff;
+}
+
+/* ===== Settings Toggle Cards ===== */
+.toggle-card {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.toggle-card .card-body {
+  flex-wrap: wrap;
+}
+
+.toggle-card label {
+  flex: 1 1 auto;
+}
+.gradient-warning {
+  background: linear-gradient(135deg, #f39c12, #d35400);
+  color: #fff;
+}
+.gradient-info {
+  background: linear-gradient(135deg, #16a085, #1abc9c);
+  color: #fff;
+}
+.gradient-secondary {
+  background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+  color: #fff;
+}
+.gradient-dark {
+  background: linear-gradient(135deg, #2d3436, #000000);
+  color: #fff;
+}
+.gradient-success {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #fff;
+}
+
+/* Ensure wide tables scroll horizontally without breaking layout */
+.table-responsive {
+  overflow-x: auto;
+}
+
+@media (max-width: 1199.98px) {
+  #navDrawer {
+    position: fixed;
+    top: 3.5rem;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: var(--header-gradient);
+    z-index: 1050;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  #navbar-logo {
+    max-height: 1.875rem;
+  }
+  .stat-box {
+    min-height: 6.25rem;
+    padding: 1rem;
+  }
+}
+
+/* Shared form layout helpers */
+.two-column-form > * {
+  flex: 0 0 100%;
+}
+@media (min-width: 768px) {
+  .two-column-form > * {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Larger checkbox styling */
+.form-check-input.checkbox-lg {
+  width: 1.3em;
+  height: 1.3em;
+}
+
+/* Accessible focus styles and contrast */
+.form-control:focus,
+.form-control:focus-visible,
+.btn:focus,
+.btn:focus-visible {
+  outline: 2px solid #005a9c;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.btn-primary {
+  background-color: #005a9c;
+  border-color: #005a9c;
+  color: #fff;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #004a82;
+  border-color: #004a82;
+}
+.form-text {
+  color: #495057;
+}
+.text-danger {
+  color: #b00020 !important;
+}
+
+/* ===== Dashboard Graph View ===== */
+#graphView {
+  background: var(--header-gradient);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+#graphView .card {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+}
+
+#graphView .card:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+#graphView .card-header {
+  background: transparent;
+  border-bottom: none;
+  font-weight: 600;
+}
+
+/* ===== User Management ===== */
+.user-card {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-card-header {
+  background: var(--header-gradient);
+  color: #fff;
+  padding: 1rem 2rem;
+  margin: -2rem -2rem 1.5rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.light-divider {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  color: var(--text-color);
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  background-color: #5c636a;
+  border-color: #565e64;
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+.table th,
+.table td {
+  border-color: rgba(0, 0, 0, 0.1);
+}

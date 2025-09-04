@@ -1,0 +1,87 @@
+<!-- Purpose: ppe report template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PPE Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/flatpickr.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+</head>
+<body class="vms-body">
+<!-- ===== Section: Navbar ===== -->
+{% include 'partials/header.html' %}
+<!-- ===== Section: Main Content ===== -->
+<div class="container mt-4">
+    <h1 class="mb-4">PPE Report</h1>
+    {% if no_data %}
+    <div class="alert alert-info">No PPE report data available.</div>
+    {% endif %}
+    <form id="rangeForm" class="row gy-2 gx-3 align-items-center flex-wrap mb-3">
+        <div class="col-md-auto"><input type="text" id="range" class="form-control" placeholder="Select range"></div>
+        <div class="col-md-auto">
+            <select id="quick" class="form-select">
+                <option value="" {{ 'selected' if selected_quick=='' else '' }}>Custom</option>
+                <option value="today" {{ 'selected' if selected_quick=='today' else '' }}>Today</option>
+                <option value="week" {{ 'selected' if selected_quick=='week' else '' }}>Last 7 days</option>
+                <option value="month" {{ 'selected' if selected_quick=='month' else '' }}>This Month</option>
+            </select>
+        </div>
+        <div class="col-md-auto">
+            <select id="status" class="form-select w-auto" multiple size="4" placeholder="Select Statuses" style="min-width:12.5rem">
+                {% for st in status_options %}
+                <option value="{{st}}">{{st.replace('_',' ').title()}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-auto">
+            <input type="number" step="0.01" id="minConf" class="form-control" placeholder="Min conf" value="{{cfg.helmet_conf_thresh}}">
+        </div>
+        <div class="col-md-auto">
+            <select id="color" class="form-select">
+                <option value="">All Colors</option>
+                <option value="red">Red</option>
+                <option value="yellow">Yellow</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="purple">Purple</option>
+                <option value="white">White</option>
+                <option value="black">Black</option>
+            </select>
+        </div>
+        <div class="col-md-auto d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">Load</button>
+            <a id="exportLink" class="btn btn-success" href="#" download>Export</a>
+            <input type="email" id="mailTo" class="form-control" placeholder="Email">
+            <button type="button" id="sendBtn" class="btn btn-secondary">Send Email</button>
+            <a href="/" class="btn btn-secondary">Back</a>
+        </div>
+    </form>
+    <div id="errorAlert" class="alert alert-danger alert-dismissible fade show d-none" role="alert">
+        <span class="alert-message"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div id="loadingOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-75 d-none" style="z-index:1050;">
+        <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="logTable">
+            <thead><tr><th>Time</th><th>Camera</th><th>Track</th><th>Status</th><th>Conf</th><th>Color</th><th>Image</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <button id="loadMore" type="button" class="btn btn-primary mt-2" style="display:none">Load more</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="/static/js/flatpickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script src="/static/js/ppe_report.js"></script>
+{% include 'partials/footer.html' %}
+<script src="/static/js/ppe_report.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gate Pass Checkout</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container text-center">
+  <h3 class="mb-3">Gate Pass {{ rec.gate_id }}</h3>
+  <p>Status: <span class="badge bg-success">{{ status }}</span></p>
+</div>
+</body>
+</html>

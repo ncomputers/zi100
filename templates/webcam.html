@@ -1,0 +1,22 @@
+<!-- Purpose: webcam face search template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Webcam Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container mt-4">
+    <h1 class="mb-3">Webcam Face Search</h1>
+    <video id="webcam" width="320" autoplay class="border"></video>
+    <div id="matchLabel" data-threshold="0.95" class="mt-2">No match</div>
+    <div class="mt-2">
+        <button id="mergeBtn" class="btn btn-sm btn-success d-none">Merge</button>
+        <button id="newBtn" class="btn btn-sm btn-primary d-none">Mark as new</button>
+    </div>
+</div>
+<script src="/static/js/webcam.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!-- Purpose: simple testing page for MCP chat -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container mt-4">
+  <h1 class="mb-4">MCP Testing</h1>
+  {% if not api_key %}
+  <form method="post" action="/mcp/save_key" class="mb-3">
+    <div class="mb-3">
+      <label for="api_key" class="form-label">OpenAI API Key</label>
+      <input type="password" class="form-control" name="api_key" id="api_key" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+  {% else %}
+  <div id="chat-box" class="border p-3 mb-3" style="height:300px; overflow-y:auto;"></div>
+  <form id="chat-form">
+    <div class="input-group">
+      <input type="text" class="form-control" name="message" placeholder="Ask something..." required>
+      <button class="btn btn-primary" type="submit">Send</button>
+    </div>
+  </form>
+  <script>
+    const form = document.getElementById('chat-form');
+    const box = document.getElementById('chat-box');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = form.message.value;
+      box.innerHTML += `<div><strong>You:</strong> ${msg}</div>`;
+      form.reset();
+      const res = await fetch('/mcp/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: msg})
+      });
+      if (res.ok) {
+        const data = await res.json();
+        box.innerHTML += `<div><strong>Bot:</strong> ${data.reply}</div>`;
+        box.scrollTop = box.scrollHeight;
+      } else {
+        box.innerHTML += `<div class="text-danger"><strong>Error:</strong> ${res.status}</div>`;
+      }
+    });
+  </script>
+  {% endif %}
+</div>
+</body>
+</html>

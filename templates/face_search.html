@@ -1,0 +1,71 @@
+<!-- Purpose: face search template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Face Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+<!-- ===== Section: Navbar ===== -->
+{% include 'partials/header.html' %}
+<!-- ===== Section: Main Content ===== -->
+<div class="container mt-4">
+    <h1 class="mb-4">Face Search</h1>
+    <form id="searchForm" method="post" enctype="multipart/form-data" class="mb-4">
+        <input type="file" name="photo" id="photo" accept="image/*" class="form-control mb-2">
+        <input type="hidden" name="captured" id="captured">
+        <video id="cam" width="320" class="d-none mb-2" autoplay></video>
+        <div class="mb-2">
+            <button type="button" class="btn btn-secondary" id="startCam">Start Camera</button>
+            <button type="button" class="btn btn-secondary d-none" id="captureBtn" disabled>Capture</button>
+        </div>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    {% if results is defined %}
+    <div class="row" id="results">
+        {% if results %}
+            {% for r in results %}
+            <div class="col-md-3 text-center mb-3">
+                {% if r.image %}<img src="data:image/jpeg;base64,{{r.image}}" class="img-thumbnail mb-2" width="120" alt="result">{% endif %}
+                <div>{{r.name}}</div>
+                <div class="text-muted">{{'{:.2f}'.format(r.score)}}</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No match found.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+<script>
+const startBtn=document.getElementById('startCam');
+const captureBtn=document.getElementById('captureBtn');
+captureBtn.disabled=true;
+const video=document.getElementById('cam');
+const captured=document.getElementById('captured');
+let stream=null;
+startBtn.addEventListener('click',async()=>{
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+  try{
+    if(!navigator.mediaDevices?.getUserMedia) throw new Error('unsupported');
+    stream=await navigator.mediaDevices.getUserMedia({video:true});
+    video.srcObject=stream;video.classList.remove('d-none');
+    captureBtn.classList.remove('d-none');
+    captureBtn.disabled=true;
+    video.addEventListener('loadedmetadata',()=>{captureBtn.disabled=false;},{once:true});
+  }catch(e){alert('Camera access denied or not supported. Please upload an image instead.');captureBtn.disabled=true;}
+});
+captureBtn.addEventListener('click',()=>{
+  const canvas=document.createElement('canvas');
+  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+  canvas.getContext('2d').drawImage(video,0,0);
+  captured.value=canvas.toDataURL('image/jpeg',0.7);
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+  video.classList.add('d-none');
+  captureBtn.classList.add('d-none');
+  captureBtn.disabled=true;
+});
+</script>
+</body>
+</html>

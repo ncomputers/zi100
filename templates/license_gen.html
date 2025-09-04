@@ -1,0 +1,81 @@
+<!-- Purpose: license gen template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>License Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="vms-body">
+<!-- ===== Section: Navbar ===== -->
+{% include 'partials/header.html' %}
+<!-- ===== Section: Main Content ===== -->
+<div class="container mt-4">
+    <h1 class="mb-4">Generate License</h1>
+    <div id="msg"></div>
+    <form id="genForm" class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Secret</label>
+            <input type="text" name="secret" class="form-control" value="your_public_key_or_secret">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Days</label>
+            <input type="number" name="days" class="form-control" value="30">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Max Cameras</label>
+            <input type="number" name="max_cameras" class="form-control" value="3">
+        </div>
+        <div class="col-md-6">
+            <div class="form-check mt-4">
+                <input class="form-check-input" type="checkbox" name="in_out_counting" id="f1" checked>
+                <label class="form-check-label" for="f1">In/Out Counting</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ppe_detection" id="f2" checked>
+                <label class="form-check-label" for="f2">PPE Detection</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary" id="genBtn">
+                <span id="genSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                Generate
+            </button>
+        </div>
+    </form>
+    <pre id="token" class="mt-3"></pre>
+</div>
+<script>
+if(localStorage.getItem('dark-mode')==='true'){document.body.classList.add('dark-mode');}
+
+document.getElementById('genForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const btn=document.getElementById('genBtn');
+    const sp=document.getElementById('genSpinner');
+    const msg=document.getElementById('msg');
+    btn.disabled=true;
+    sp.classList.remove('d-none');
+    try{
+        const form=new FormData(e.target);
+        const obj=Object.fromEntries(form.entries());
+        obj.in_out_counting=form.get('in_out_counting')==='on';
+        obj.ppe_detection=form.get('ppe_detection')==='on';
+        const r=await fetch('/license/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)});
+        if(!r.ok) throw new Error('Request failed');
+        const d=await r.json();
+        if(d.token){
+            document.getElementById('token').textContent=d.token;
+            msg.innerHTML='<div class="alert alert-success">Generated</div>';
+        }else{
+            throw new Error(d.error||'Error');
+        }
+    }catch(err){
+        msg.innerHTML='<div class="alert alert-danger">'+err.message+'</div>';
+    }finally{
+        sp.classList.add('d-none');
+        btn.disabled=false;
+    }
+});
+</script>
+</body>
+</html>

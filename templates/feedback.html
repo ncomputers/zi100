@@ -1,0 +1,128 @@
+<!-- Purpose: enterprise feedback submission form -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Feedback</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .chip-group .btn{margin-right:.25rem;margin-bottom:.25rem}
+        #dropZone{border:2px dashed #ced4da;padding:1rem;border-radius:.5rem;cursor:pointer}
+        #dropZone.dragover{background:#e9ecef}
+        .sticky-header{position:sticky;top:0;z-index:1020}
+    </style>
+</head>
+<body class="vms-body" data-app-version="{{ cfg.get('version', 'unknown') }}">
+{% include 'partials/header.html' %}
+<div class="sticky-header bg-light p-3 shadow-sm mb-4">
+    <h1 class="h4 mb-0">Feedback <small class="text-muted">Help us fix and improve faster</small></h1>
+</div>
+<div class="container mb-5">
+    <form id="feedbackForm" class="row g-4" method="post" action="/feedback" enctype="multipart/form-data">
+        <div class="col-md-7">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" name="title" class="form-control" required placeholder="Short summary, e.g., 'Print page throws 500 on Gate Pass'">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Type</label>
+                <div class="btn-group" role="group">
+                    <input type="radio" class="btn-check" name="type" id="typeIssue" value="issue" checked>
+                    <label class="btn btn-outline-primary" for="typeIssue">🐞 Issue</label>
+                    <input type="radio" class="btn-check" name="type" id="typeImprovement" value="improvement">
+                    <label class="btn btn-outline-primary" for="typeImprovement">💡 Improvement</label>
+                    <input type="radio" class="btn-check" name="type" id="typeQuestion" value="question">
+                    <label class="btn btn-outline-primary" for="typeQuestion">❓ Question</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Severity</label>
+                <div class="chip-group" id="severityChips">
+                    <input type="radio" class="btn-check" name="severity" id="sevBlocker" value="blocker" required>
+                    <label class="btn btn-outline-danger" for="sevBlocker">Blocker</label>
+                    <input type="radio" class="btn-check" name="severity" id="sevHigh" value="high">
+                    <label class="btn btn-outline-danger" for="sevHigh">🔥 High</label>
+                    <input type="radio" class="btn-check" name="severity" id="sevMedium" value="medium">
+                    <label class="btn btn-outline-warning" for="sevMedium">Medium</label>
+                    <input type="radio" class="btn-check" name="severity" id="sevLow" value="low">
+                    <label class="btn btn-outline-secondary" for="sevLow">Low</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="module" class="form-label">Module</label>
+                <select id="module" name="module" class="form-select" required>
+                    <option value="">Select module</option>
+                    <option>Dashboard</option>
+                    <option>Gate Pass</option>
+                    <option>Reports</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" name="description" rows="4" class="form-control" required placeholder="Tell us what happened. Screenshots help a lot."></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Steps to Reproduce</label>
+                <div id="stepsContainer"></div>
+                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="addStep">Add step</button>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col">
+                    <label for="expected" class="form-label">Expected</label>
+                    <textarea id="expected" name="expected" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="col">
+                    <label for="actual" class="form-label">Actual</label>
+                    <textarea id="actual" name="actual" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="repro" class="form-label">Reproducibility</label>
+                <select id="repro" name="repro" class="form-select" required>
+                    <option>Always</option>
+                    <option>Sometimes</option>
+                    <option>Rare</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="contact" class="form-label">Contact</label>
+                <input type="email" id="contact" name="contact" class="form-control" placeholder="you@example.com">
+                <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" id="anonymous" name="anonymous">
+                    <label class="form-check-label" for="anonymous">Send anonymously</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="allowContact" name="allow_contact" checked>
+                    <label class="form-check-label" for="allowContact">Allow support to contact me</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Attachments</label>
+                <div id="dropZone" class="text-muted">Drag & drop or click to upload</div>
+                <input type="file" id="attachments" class="d-none" multiple>
+                <div id="attachmentList" class="mt-2"></div>
+            </div>
+            <input type="hidden" name="context" id="contextField">
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Feedback</button>
+                <button type="button" class="btn btn-outline-secondary ms-2" id="saveDraft">Save Draft</button>
+                <button type="button" class="btn btn-outline-secondary ms-2" id="previewBtn">Preview</button>
+            </div>
+            <div id="feedbackResult" class="alert d-none" role="alert"></div>
+        </div>
+        <div class="col-md-5">
+            <h5>Context</h5>
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="includeContext" checked>
+                <label class="form-check-label" for="includeContext">Include with submission</label>
+            </div>
+            <ul class="list-group mb-4" id="contextList"></ul>
+            <h6>My last 5 tickets</h6>
+            <ul class="list-group" id="recentList"></ul>
+        </div>
+    </form>
+</div>
+<script src="/static/js/feedback.js"></script>
+</body>
+</html>

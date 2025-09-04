@@ -1,0 +1,55 @@
+<!-- Purpose: user profile management page -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body class="vms-body">
+{% include 'partials/header.html' %}
+<div class="container mt-4">
+    <div class="mb-3">
+        <span class="badge bg-secondary me-1">Company: {{ meta.get('company', 'N/A') }}</span>
+        <span class="badge bg-secondary me-1">Department: {{ meta.get('department', 'N/A') }}</span>
+        <span class="badge bg-secondary me-1">Location: {{ meta.get('location', 'N/A') }}</span>
+        <span class="badge bg-secondary">Access Level: {{ meta.get('access_level', 'N/A') }}</span>
+    </div>
+    <div class="mb-4">
+        <a href="/profile/visibility" class="me-3">Profile visibility</a>
+        <a href="/profile/privacy">Privacy</a>
+    </div>
+    <h1 class="mb-4">My Profile</h1>
+    <form method="post" action="/profile" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="name" class="form-label" id="nameLabel">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ cfg.get('user_name','') }}" aria-labelledby="nameLabel" aria-describedby="nameHelp nameError" required>
+            <div id="nameHelp" class="form-text">Enter your full name.</div>
+            <div id="nameError" class="text-danger small" aria-live="polite"></div>
+        </div>
+        <div class="mb-3">
+            <label for="photo" class="form-label" id="photoLabel">Photo</label>
+            <input class="form-control" type="file" id="photo" name="photo" accept="image/*" aria-labelledby="photoLabel" aria-describedby="photoHelp photoError">
+            <div id="photoHelp" class="form-text">Upload a profile photo.</div>
+            {% if cfg.get('profile_photo') %}
+            <img src="{{ cfg['profile_photo'] }}" class="img-thumbnail mt-2 img-fluid" style="max-width:9.375rem;" alt="Current profile photo">
+            {% endif %}
+            <div id="photoError" class="text-danger small" aria-live="polite"></div>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label" id="passwordLabel">New Password (optional)</label>
+            <input type="password" class="form-control" id="password" name="password" aria-labelledby="passwordLabel" aria-describedby="passwordHelp passwordError">
+            <div id="passwordHelp" class="form-text">Leave blank to keep current password. Minimum 8 characters.</div>
+            <div id="passwordError" class="text-danger small" aria-live="polite"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+<script src="/static/js/profile.js"></script>
+
+</body>
+</html>
+

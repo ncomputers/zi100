@@ -1,0 +1,29 @@
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="licHead">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lic" aria-expanded="false">License</button>
+                </h2>
+                <div id="lic" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <label class="form-label">License Key</label>
+                        <div class="input-group mb-3">
+                            <input type="password" id="licenseKey" class="form-control" value="{{cfg.license_key}}">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleKey"><i class="bi-eye"></i></button>
+                        </div>
+                        {% if cfg.license_info and cfg.license_info.valid %}
+                        <div class="mb-3">
+                            <strong>Client:</strong> {{cfg.license_info.client}}<br>
+                            <strong>Max Cameras:</strong> {{cfg.license_info.max_cameras}}<br>
+                            <strong>Features:</strong>
+                            In/Out {{'Yes' if cfg.license_info.features.in_out_counting else 'No'}},
+                            PPE {{'Yes' if cfg.license_info.features.ppe_detection else 'No'}},
+                            VMS {{'Yes' if cfg.license_info.features.visitor_mgmt else 'No'}},
+                            Face Recog {{'Yes' if cfg.license_info.features.face_recognition else 'No'}}<br>
+                            <strong>Expires in:</strong>
+                            {{((cfg.license_info.exp | int) - now_ts) // 86400}} days
+                        </div>
+                        {% endif %}
+                        <button type="button" id="activateLic" class="btn btn-primary">Activate</button>
+                        <div id="licMsg" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>

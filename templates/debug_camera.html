@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Camera Debug</title>
+  </head>
+  <body>
+    <h1>Camera Debug</h1>
+    {% for cam in cameras %}
+    <h3>{{ cam.id }}: {{ cam.name }}</h3>
+    <div><strong>Backend:</strong> {{ cam.backend }}</div>
+    <div><strong>Last Restart:</strong> {{ cam.restart_ts or 'N/A' }}</div>
+    {% if cam.stats %}
+    <div><strong>Capture FPS:</strong> {{ cam.stats.capture_fps }}</div>
+    <div><strong>Process FPS:</strong> {{ cam.stats.process_fps }}</div>
+    <div><strong>Queue Size:</strong> {{ cam.stats.queue }}</div>
+    <div><strong>Last Capture:</strong> {{ cam.stats.last_capture_ts }}</div>
+    <div><strong>Last Process:</strong> {{ cam.stats.last_process_ts }}</div>
+    {% endif %} {% if cam.debug_attempts %}
+    <div><strong>Attempts:</strong></div>
+    <ul>
+      {% for att in cam.debug_attempts %}
+      <li>
+        <strong>{{ att.backend }}</strong> {{ att.command }} - {{ att.error }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% if cam.debug_summary %}
+    <div><strong>Summary:</strong> {{ cam.debug_summary }}</div>
+    {% endif %} {% elif cam.debug_summary %}
+    <div><strong>Last Error:</strong> {{ cam.debug_summary }}</div>
+    {% endif %} {% if cam.debug_runtime %}
+    <div><strong>Runtime Errors:</strong></div>
+    <ul>
+      {% for ev in cam.debug_runtime %}
+      <li>{{ ev.ts }} {{ ev.backend }} - {{ ev.message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <label>Pipeline (current or last attempt)</label>
+    <input
+      id="pipe-{{cam.id}}"
+      value="{{ cam.pipeline | replace('\n', ' ') }}"
+      style="width: 100%"
+    />
+    <label>RTSP Transport</label>
+    <input id="rtsp-{{cam.id}}" value="{{ cam.rtsp_transport }}" />
+    <label>FFmpeg Flags</label>
+    <input id="ff-{{cam.id}}" value="{{ cam.ffmpeg_flags }}" />
+    <button class="save-btn" data-cam-id="{{ cam.id }}">Apply & Restart</button>
+    <hr />
+    {% endfor %}
+    <script>
+      function save(id) {
+        const payload = { cam_id: id };
+        const pipeline = document.getElementById("pipe-" + id).value;
+        if (pipeline) payload.pipeline = pipeline;
+        const rtsp = document.getElementById("rtsp-" + id).value;
+        if (rtsp) payload.rtsp_transport = rtsp;
+        const ff = document.getElementById("ff-" + id).value;
+        if (ff) payload.ffmpeg_flags = ff;
+        fetch("/debug/camera", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        })
+          .then((r) => r.json())
+          .then(() => alert("Updated camera " + id));
+      }
+
+      document.querySelectorAll(".save-btn").forEach((btn) => {
+        btn.addEventListener("click", () =>
+          save(parseInt(btn.dataset.camId, 10)),
+        );
+      });
+    </script>
+  </body>
+</html>

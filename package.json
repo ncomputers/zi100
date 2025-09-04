@@ -1,0 +1,21 @@
+{
+  "name": "vms10",
+  "version": "1.0.0",
+  "description": "Version 81 separates the person counting and PPE detection logic into two independent modules.  The basic **PersonTracker** detects and tracks people and logs entry/exit events to `person_logs`, pushing PPE-check items to `ppe_queue`.  A new **PPEDetector** reads those queue entries and stores the results in `ppe_logs`. Older entries are pruned automatically based on the configurable `ppe_log_retention_secs` window. Camera configuration now uses grouped tasks for counting and PPE detection.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5"
+  }
+}

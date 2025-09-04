@@ -1,0 +1,14 @@
+{
+  "company_name": "Workspace Metal Solutions",
+  "site_name": "Udaipur",
+  "website": "https://workspace.example.com",
+  "address": "123 Industrial Rd, Udaipur",
+  "phone": "+91-12345-67890",
+  "tagline": "Safety first, every time",
+  "watermark": false,
+  "print_layout": "ID Card",
+  "company_logo": "company_logo.png",
+  "company_logo_url": "/static/logos/company_logo.png?v=1754412161",
+  "footer_logo": "footer_logo.png",
+  "footer_logo_url": "/static/logos/footer_logo.png?v=1754412161"
+}

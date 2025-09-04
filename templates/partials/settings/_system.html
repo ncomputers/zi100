@@ -1,0 +1,70 @@
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="sysHead">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sys" aria-expanded="true">System Configuration</button>
+                </h2>
+                <div id="sys" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            <div class="col">
+                                <label class="form-label">Max Capacity</label>
+                                <input type="number" name="max_capacity" class="form-control" value="{{cfg.max_capacity}}">
+                                <div class="form-text">Maximum people allowed on site.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Warn Threshold (%)</label>
+                                <input type="number" name="warn_threshold" class="form-control" value="{{cfg.warn_threshold}}">
+                                <div class="form-text">Percent of capacity before warning triggers.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">FPS</label>
+                                <input type="number" name="fps" class="form-control" value="{{cfg.fps}}">
+                                <div class="form-text">Desired processing frame rate.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Capture Buffer (s)</label>
+                                <div class="input-group align-items-center">
+                                    <input type="range" class="form-range flex-grow-1" id="captureBufferRange" name="capture_buffer_seconds" min="5" max="60" value="{{cfg.capture_buffer_seconds}}">
+                                    <input type="number" class="form-control ms-2" id="captureBufferInput" min="5" max="60" value="{{cfg.capture_buffer_seconds}}">
+                                </div>
+                                <div class="form-text">Seconds of encoded data to retain before dropping.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Frame Skip</label>
+                                <input type="number" name="frame_skip" class="form-control" value="{{cfg.frame_skip}}">
+                                <div class="form-text">Process every Nth frame.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Line Ratio</label>
+                                <input type="number" step="0.1" name="line_ratio" class="form-control" value="{{cfg.line_ratio}}">
+                                <div class="form-text">Thickness ratio for counting lines.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Velocity Threshold</label>
+                                <input type="number" name="v_thresh" class="form-control" value="{{cfg.v_thresh}}">
+                                <div class="form-text">Minimum movement speed to register.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Debounce (s)</label>
+                                <input type="number" step="0.1" name="debounce" class="form-control" value="{{cfg.debounce}}">
+                                <div class="form-text">Ignore repeat events within this time.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Retry Interval (s)</label>
+                                <input type="number" name="retry_interval" class="form-control" value="{{cfg.retry_interval}}">
+                                <div class="form-text">Delay before reconnect attempts.</div>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Max Retry Count</label>
+                                <input type="number" name="max_retry" class="form-control" value="{{cfg.max_retry}}">
+                                <div class="form-text">Number of retry attempts before giving up.</div>
+                            </div>
+                            {{ tc.toggle_card('enablePersonTracking','enable_person_tracking','Enable Person Tracking', cfg.enable_person_tracking, attrs='data-bs-toggle="tooltip" title="Track people across frames"') }}
+                            {{ tc.toggle_card('enableProfiling','enable_profiling','Enable Profiler', cfg.enable_profiling, attrs='data-bs-toggle="tooltip" title="Collect performance metrics"') }}
+                            <div class="col">
+                                <label class="form-label">Profiling Interval (s)</label>
+                                <input type="number" name="profiling_interval" class="form-control" value="{{cfg.profiling_interval}}">
+                                <div class="form-text">Frequency of profiler reporting.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>

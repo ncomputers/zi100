@@ -1,0 +1,20 @@
+/* Purpose: Styles for login page */
+.login-container{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-color:#f8f9fa;
+}
+.login-card{
+  width:100%;
+  max-width:25rem;
+  border-top:0.25rem solid var(--bs-primary);
+}
+.logo-wrapper{
+  text-align:center;
+}
+
+@media (max-width:576px){
+  .login-card{max-width:100%;}
+}

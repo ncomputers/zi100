@@ -1,0 +1,12 @@
+{% macro toggle_card(id, name, label, checked=False, value='1', col='col', attrs='') %}
+<div class="{{ col }}">
+  <div class="card toggle-card h-100">
+    <div class="card-body d-flex align-items-center justify-content-between gap-2 flex-wrap">
+      <label for="{{ id }}" class="mb-0 flex-grow-1">{{ label }}</label>
+      <div class="form-check form-switch m-0 flex-shrink-0">
+        <input class="form-check-input" type="checkbox" id="{{ id }}" name="{{ name }}" value="{{ value }}" {{ attrs|safe }} {% if checked %}checked{% endif %}>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}

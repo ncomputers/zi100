@@ -1,0 +1,19 @@
+/* mobile-first layout for contact page */
+.contact-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media print {
+  nav, .offcanvas, #page-fade, .contact-details { display: none !important; }
+  .contact-info { display: block; }
+}

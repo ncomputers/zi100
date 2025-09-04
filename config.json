@@ -1,0 +1,204 @@
+{
+  "stream_url": "http://localhost/zm/cgi-bin/nph-zms?mode=jpeg&monitor=20",
+  "person_model": "yolov8n.pt",
+  "ppe_model": "mymodalv7.pt",
+  "plate_model": "license_plate_detector.pt",
+  "device": "auto",
+  "headless": false,
+  "license_key": "eyJleHAiOjE3NTcyNjgwNTcsIm1heF9jYW1lcmFzIjozLCJmZWF0dXJlcyI6eyJpbl9vdXRfY291bnRpbmciOnRydWUsInBwZV9kZXRlY3Rpb24iOnRydWUsInZpc2l0b3JfbWdtdCI6dHJ1ZSwiZmFjZV9yZWNvZ25pdGlvbiI6dHJ1ZX0sImNsaWVudCI6ImRlbW8ifQ.VLsvp7whEf_femOFCESokHvyM9ZeoNbXSe-AO6DpUTc",
+  "visitor_model": "buffalo_l",
+  "face_match_thresh": 0.6,
+  "visitor_conf_thresh": 0.85,
+  "visitor_sim_thresh": 0.85,
+  "visitor_min_face_size": 80,
+  "visitor_blur_thresh": 150.0,
+  "visitor_size_thresh": 10000,
+  "visitor_fps_skip": 2,
+  "max_cameras": 3,
+  "features": {
+    "in_out_counting": true,
+    "ppe_detection": false,
+    "visitor_mgmt": true,
+    "face_recognition": true
+  },
+  "fps": 15,
+  "capture_buffer": 3,
+  "local_buffer_size": 1,
+  "ready_frames": 1,
+  "ready_duration": null,
+  "ready_timeout": 15,
+  "frame_skip": 5,
+  "line_ratio": 0.5,
+  "v_thresh": 2,
+  "debounce": 0.5,
+  "retry_interval": 5,
+  "conf_thresh": 0.3,
+  "helmet_conf_thresh": 0.5,
+  "detect_helmet_color": false,
+  "show_lines": false,
+  "show_ids": false,
+  "show_counts": false,
+  "overlay_every_n": 1,
+  "overlay_min_ms": 0,
+  "enable_person_tracking": true,
+  "enable_profiling": false,
+  "profiling_interval": 5,
+  "max_capacity": 500,
+  "warn_threshold": 80,
+  "track_ppe": [
+    "helmet"
+  ],
+  "alert_anomalies": [
+    "no_helmet"
+  ],
+  "redis_url": "redis://localhost:6379/0",
+  "stream_mode": "ffmpeg",
+  "enable_gstreamer": false,
+  "backend_priority": [
+    "ffmpeg",
+    "opencv"
+  ],
+  "pipeline_profiles": {
+    "low_latency": {
+      "label": "Low latency",
+      "backend": "gstreamer",
+      "pipelines": {
+        "gstreamer": "rtspsrc location=\"{url}\" protocols=tcp latency=100 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! videoscale ! video/x-raw,format=BGR ! queue max-size-buffers=1 leaky=downstream ! appsink name=appsink drop=true sync=false max-buffers=1",
+        "ffmpeg": "ffmpeg -rtsp_transport tcp -i {url} -f rawvideo -pix_fmt bgr24 -",
+        "opencv": "{url}"
+      },
+      "resolutions": [
+        "720p",
+        "1080p"
+      ]
+    },
+    "recording": {
+      "label": "Recording",
+      "backend": "ffmpeg",
+      "pipelines": {
+        "gstreamer": "rtspsrc location=\"{url}\" protocols=tcp latency=100 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw,format=BGR ! queue max-size-buffers=1 leaky=downstream ! appsink name=appsink drop=true sync=false max-buffers=1",
+        "ffmpeg": "ffmpeg -rtsp_transport tcp -i {url} -an -f rawvideo -pix_fmt bgr24 -",
+        "opencv": "{url}"
+      },
+      "resolution": "1080p"
+    }
+  },
+  "ffmpeg_high_watermark": 10,
+  "ffmpeg_low_watermark": 5,
+  "ffmpeg_reconnect_delay": 1.0,
+  "cpu_limit_percent": 50,
+  "port": 5002,
+  "default_host": "",
+  "email": {
+    "smtp_host": "",
+    "smtp_port": 587,
+    "smtp_user": "",
+    "smtp_pass": "",
+    "use_tls": true,
+    "use_ssl": false,
+    "from_addr": "test@example.com"
+  },
+  "secret_key": "change-me",
+  "track_objects": [
+    "person",
+    "vehicle"
+  ],
+  "alert_rules": [
+    {
+      "metric": "no_helmet",
+      "type": "event",
+      "value": 1,
+      "recipients": "a@example.com",
+      "attach": true
+    }
+  ],
+  "track_misc": true,
+  "preview_anomalies": [],
+  "email_enabled": true,
+  "show_track_lines": false,
+  "preview_scale": 1.0,
+  "enable_live_charts": false,
+  "chart_update_freq": 5,
+  "ppe_log_limit": 1000,
+  "alert_key_retention_secs": 604800,
+  "ppe_log_retention_secs": 604800,
+  "log_retention_days": 30,
+  "users": [
+    {
+      "username": "admin",
+      "password": "$pbkdf2-sha256$29000$ACCkVAphjHHO.b/3HiOk9A$y6x.QGbw.Op9fS3fMDuLaT7jH5LyTaGO/gB7N/XFhSE",
+      "role": "admin"
+    },
+    {
+      "username": "viewer",
+      "password": "$pbkdf2-sha256$29000$0lrr3bv33ptTihHCOIcQQg$0D5Meobfy0usNdCgJE6Mu6ucHWnWfPNR.XYuH7Sm7Ao",
+      "role": "viewer"
+    }
+  ],
+  "settings_password": "000",
+  "max_retry": 5,
+  "invite_photo_max_bytes": 200000,
+  "logo_url": "https://www.coromandel.biz/wp-content/uploads/2025/04/cropped-CIL-Logo_WB-02-1-300x100.png",
+  "logo2_url": "https://www.coromandel.biz/wp-content/uploads/2025/02/murugappa-logo.png",
+  "object_classes": [
+    "person",
+    "car",
+    "truck",
+    "bus",
+    "motorcycle",
+    "bicycle",
+    "helmet",
+    "no_helmet"
+  ],
+  "ppe_classes": [
+    "helmet",
+    "no_helmet"
+  ],
+  "count_classes": [
+    "person",
+    "car",
+    "truck",
+    "bus",
+    "motorcycle",
+    "bicycle"
+  ],
+  "capture_buffer_seconds": 15,
+  "show_face_boxes": false,
+  "debug_logs": false,
+  "enable_face_recognition": true,
+  "enable_face_counting": true,
+  "face_count_conf": 0.85,
+  "face_count_similarity": 0.6,
+  "face_count_min_size": 80,
+  "branding": {
+    "company_name": "Workspace Metal Solutions",
+    "site_name": "Udaipur",
+    "website": "https://workspace.example.com",
+    "address": "123 Industrial Rd, Udaipur",
+    "phone": "+91-12345-67890",
+    "tagline": "Safety first, every time",
+    "watermark": false,
+    "print_layout": "ID Card",
+    "company_logo": "company_logo.png",
+    "company_logo_url": "/static/logos/company_logo.png?v=1754412161",
+    "footer_logo": "footer_logo.png",
+    "footer_logo_url": "/static/logos/footer_logo.png?v=1754412161"
+  },
+  "license_info": {
+    "valid": true,
+    "exp": 1757268057,
+    "max_cameras": 3,
+    "features": {
+      "in_out_counting": true,
+      "ppe_detection": false,
+      "visitor_mgmt": true,
+      "face_recognition": true
+    },
+    "client": "demo"
+  },
+  "ffmpeg_flags": "-flags low_delay -fflags nobuffer",
+  "ffmpeg_available": true,
+  "gst_available": true,
+  "cuda_available": true,
+  "ffmpeg_supports_drop": false
+}

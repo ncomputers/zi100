@@ -1,0 +1,66 @@
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="brandHead">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#brand" aria-expanded="false">Branding</button>
+                </h2>
+                <div id="brand" class="accordion-collapse collapse">
+                    <div class="accordion-body" id="brandForm">
+                            <div class="mb-3">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" name="company_name" class="form-control" value="{{ cfg.branding.company_name }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Site/Location Name</label>
+                                <input type="text" name="site_name" class="form-control" value="{{ cfg.branding.site_name }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Website</label>
+                                <input type="text" name="website" class="form-control" value="{{ cfg.branding.website }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <input type="text" name="address" class="form-control" value="{{ cfg.branding.address }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="phone" class="form-control" value="{{ cfg.branding.phone }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tagline</label>
+                                <input type="text" name="tagline" class="form-control" value="{{ cfg.branding.tagline }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company Logo</label>
+                                <input type="file" name="logo" id="logoInput" class="form-control">
+                                <input type="text" name="company_logo_url_input" class="form-control mt-2" placeholder="Or enter logo URL" value="{{ cfg.branding.company_logo_url }}">
+                                <img id="logo-preview" src="{{ cfg.branding.company_logo_url or cfg.logo_url }}" height="60" class="mt-2" alt="logo"{% if not (cfg.branding.company_logo_url or cfg.logo_url) %} style="display:none"{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Footer Logo</label>
+                                <input type="file" name="footer_logo" id="footerLogoInput" class="form-control">
+                                <input type="text" name="footer_logo_url_input" class="form-control mt-2" placeholder="Or enter footer logo URL" value="{{ cfg.branding.footer_logo_url }}">
+                                <img id="footer-logo-preview" src="{{ cfg.branding.footer_logo_url or cfg.logo2_url }}" height="40" class="mt-2" alt="footer logo"{% if not (cfg.branding.footer_logo_url or cfg.logo2_url) %} style="display:none"{% endif %}>
+                            </div>
+                            {% if cfg.ffmpeg_supports_drop %}
+                            <div class="row row-cols-1 g-3 mb-3">
+                                {{ tc.toggle_card('brandingWm','watermark','Watermark', cfg.branding.watermark) }}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning mb-3">
+                                Watermarking requires an FFmpeg build with <code>-drop</code> support. Upgrade FFmpeg to enable this feature.
+                            </div>
+                            {% endif %}
+                            <div class="mb-3">
+                                <label class="form-label">Print Layout</label>
+                                {% set layouts = ['A4', 'A5', 'A6', 'ID Card', '80mm'] %}
+                                <select class="form-select" name="print_layout">
+                                    {% for opt in layouts %}
+                                    <option value="{{ opt }}" {% if cfg.branding.print_layout==opt %}selected{% endif %}>{{ opt }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">Branding will be saved with other settings</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>

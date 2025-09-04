@@ -1,0 +1,45 @@
+<!-- Purpose: license activation template -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>License Activation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                <h2 class="mb-3 text-center">Activate License</h2>
+                <div id="msg"></div>
+                <form id="licenseForm">
+                    <div class="mb-3">
+                        <label for="licenseKey" class="form-label">License Key</label>
+                        <input type="text" id="licenseKey" class="form-control" required>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Activate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.getElementById('licenseForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const key = document.getElementById('licenseKey').value.trim();
+        const r = await fetch('/license', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key })
+        });
+        const d = await r.json();
+        const msg = document.getElementById('msg');
+        if (d.activated) {
+            msg.innerHTML = '<div class="alert alert-success">License activated. <a href="/login">Login</a></div>';
+        } else {
+            msg.innerHTML = '<div class="alert alert-danger">' + (d.error || 'Activation failed') + '</div>';
+        }
+    });
+    </script>
+</body>
+</html>

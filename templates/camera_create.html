@@ -1,0 +1,181 @@
+<!-- Purpose: simplified camera creation form -->
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add Camera</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/flatly/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="vms-body">
+    {% include 'partials/header.html' %}
+    <div class="container mt-4">
+      <h1 class="mb-4">Add Camera</h1>
+      <form id="cameraForm" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="name" class="form-label">Camera Name</label>
+          <input id="name" name="name" class="form-control" required />
+          <div class="invalid-feedback"></div>
+        </div>
+        <div class="mb-3">
+          <label for="url" class="form-label">Stream URL</label>
+          <input id="url" name="url" class="form-control" required />
+          <div id="urlHint" class="form-text"></div>
+          <div class="invalid-feedback"></div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <label for="type" class="form-label">Type</label>
+            <select id="type" name="type" class="form-select">
+              <option value="rtsp">RTSP</option>
+              <option value="http">HTTP</option>
+              <option value="local">Local</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-3">
+            <label for="profile" class="form-label">Profile</label>
+            <select id="profile" name="profile" class="form-select">
+              <option value="main">Main</option>
+              <option value="sub">Sub</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2">
+            <label for="orientation" class="form-label">Orientation</label>
+            <select id="orientation" name="orientation" class="form-select">
+              <option value="vertical">Vertical</option>
+              <option value="horizontal">Horizontal</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2">
+            <label for="resolution" class="form-label">Resolution</label>
+            <select id="resolution" name="resolution" class="form-select">
+              <option value="original">Original</option>
+              <option value="480p">480p</option>
+              <option value="720p">720p</option>
+              <option value="1080p">1080p</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2">
+            <label for="transport" class="form-label">Transport</label>
+            <select id="transport" name="transport" class="form-select">
+              <option value="">Auto</option>
+              <option value="tcp">TCP</option>
+              <option value="udp">UDP</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-2 form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="ppe"
+              name="ppe"
+            />
+            <label class="form-check-label" for="ppe">PPE</label>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2 form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="vms"
+              name="vms"
+            />
+            <label class="form-check-label" for="vms">VMS</label>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2 form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="face_recog"
+              name="face_recog"
+            />
+            <label class="form-check-label" for="face_recog">Face Recog</label>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2 form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="inout_count"
+              name="inout_count"
+            />
+            <label class="form-check-label" for="inout_count"
+              >In/Out Count</label
+            >
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2 form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="reverse"
+              name="reverse"
+            />
+            <label class="form-check-label" for="reverse">Reverse</label>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-2 form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="show"
+              name="show"
+            />
+            <label class="form-check-label" for="show">Show</label>
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+        <div class="text-end">
+          <button type="button" class="btn btn-secondary me-2" id="testPreview">
+            Test &amp; Preview
+          </button>
+          <button type="button" class="btn btn-primary me-2" id="saveBtn">
+            Save
+          </button>
+          <button type="button" class="btn btn-success" id="saveActivateBtn">
+            Save &amp; Activate
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Preview</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <img id="previewImg" class="img-fluid mb-2" alt="Preview" />
+            <pre id="previewLog" class="text-start small text-muted mb-0"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="{{ url_for('static', path='js/camera_create.js') }}"
+    ></script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+{% extends 'vms_base.html' %}
+{% block title %}Pending Gate Pass Requests{% endblock %}
+
+{% block content %}
+  <h1 class="my-4">Pending Gate Pass Requests</h1>
+  <div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Gate ID</th>
+        <th>Name</th>
+        <th>Host</th>
+        <th>Created</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.gate_id }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.host }}</td>
+        <td>{{ r.time }}</td>
+        <td><span class="badge bg-warning text-dark">Pending</span></td>
+        <td>
+          <button class="btn btn-sm btn-primary resend-btn" data-id="{{ r.gate_id }}">Resend</button>
+          <button class="btn btn-sm btn-danger cancel-btn" data-id="{{ r.gate_id }}">Cancel</button>
+          <a class="btn btn-sm btn-secondary" href="{{ build_qr_link(r.gate_id, request) }}" target="_blank">View</a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.querySelectorAll('.resend-btn').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    const id = btn.dataset.id;
+    await fetch(`/gatepass/resend/${id}`, {method:'POST'});
+  });
+});
+document.querySelectorAll('.cancel-btn').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    const id = btn.dataset.id;
+    await fetch(`/gatepass/cancel/${id}`, {method:'POST'});
+    location.reload();
+  });
+});
+</script>
+{% endblock %}
