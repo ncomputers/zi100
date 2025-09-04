@@ -339,34 +339,6 @@ networks, or lower for minimal latency. Worst-case latency is roughly
 - `public/` – Optional PHP pages.
 - `tests/` – Simple unit tests.
 
-### Face Recognition
-
-Captured face photos are processed with
-the `buffalo_l` model. When a single face is detected the embedding is saved in
-Redis under `face_db` and appended to an in-memory FAISS index that is
-reconstructed from Redis on startup. Similarity search is exposed via
-`/api/faces/search` which returns the top matches and cosine scores. A score of
-`0.4` or greater is typically considered a strong match.
-
-#### FAISS Index Maintenance
-
-The FAISS index mirrors embeddings stored in Redis. `id_map` ordering is
-persisted in the `face:id_map` list and the index is rebuilt automatically on
-startup. If the index becomes corrupted or desynchronized, clear the list and
-reinitialize:
-
-```python
-from modules import face_db
-from config import config
-import redis
-
-r = redis.Redis()  # configure as needed
-r.delete('face:id_map')
-face_db.init(config, r)
-```
-
-Restarting the service will load the regenerated index.
-
 ## Development Tips
 
 This repository uses a `.gitattributes` file that keeps incoming changes during merges.
@@ -498,7 +470,6 @@ Detailed documentation for internal modules and routers is available below.
 - [duplicate_filter](docs/modules/modules_duplicate_filter.md)
 - [email_utils](docs/modules/modules_email_utils.md)
 - [export](docs/modules/modules_export.md)
-- [face_db](docs/modules/modules_face_db.md)
 - [face_engine**\_init**](docs/modules/modules_face_engine___init__.md)
 - [face_engine_detector](docs/modules/modules_face_engine_detector.md)
 - [face_engine_embedder](docs/modules/modules_face_engine_embedder.md)
@@ -521,7 +492,6 @@ Detailed documentation for internal modules and routers is available below.
 
 - [**init**](docs/modules/routers___init__.md)
 - [alerts](docs/modules/routers_alerts.md)
-- [api_faces](docs/modules/routers_api_faces.md)
 - [auth](docs/modules/routers_auth.md)
 - [blueprints](docs/modules/routers_blueprints.md)
 - [cameras](docs/modules/routers_cameras.md)

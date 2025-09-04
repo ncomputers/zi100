@@ -4,14 +4,13 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from . import alerts, api_faces, api_identities, auth
+from . import alerts, api_identities, auth
 
 from . import cameras as cam_routes
 from . import (
     config_api,
     dashboard,
     detections,
-    face_db,
     feedback,
     health,
 )
@@ -29,8 +28,6 @@ MODULES = [
     alerts,
     auth,
     admin_users,
-    face_db,
-    api_faces,
     api_identities,
     health,
     profile,
@@ -61,8 +58,6 @@ def init_all(
     cam_routes.init_context(cfg, cams, trackers, redis_client, templates_dir)
     reports.init_context(cfg, trackers, redis_client, templates_dir, cams)
     ppe_reports.init_context(cfg, trackers, redis_client, templates_dir)
-    face_db.init_context(cfg, redis_client)
-    api_faces.init_context(cfg, redis_client)
     api_identities.init_context(cfg, redis_client)
 
     profile.init_context(cfg, redis_client, templates_dir)

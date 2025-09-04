@@ -10,7 +10,6 @@ __all__ = [
     "settings",
     "entry",
     "gatepass",
-    "api_faces",
     "api_identities",
     "blueprints",
     "mcp",

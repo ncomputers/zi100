@@ -57,7 +57,6 @@ async def report_page(
             redis.zcard("history")
             or redis.zcard("person_logs")
             or redis.zcard("vehicle_logs")
-            or redis.zcard("face_logs")
         ):
             no_data = False
     except Exception:
@@ -111,7 +110,7 @@ async def _report_data(query: ReportQuery):
         elif query.type == "vehicle":
             key = "vehicle_logs"
         else:
-            key = "face_logs"
+            key = "person_logs"
         entries = [json.loads(e) for e in redis.zrevrangebyscore(key, end_ts, start_ts)]
 
         if query.cam_id is not None:

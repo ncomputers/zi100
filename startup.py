@@ -96,21 +96,6 @@ async def ppe_worker(
             cfg.setdefault("features", {})["ppe_detection"] = False
 
 
-async def visitor_worker(
-    app: FastAPI, cfg: dict[str, Any], redis_client: Redis
-) -> None:
-    """Launch the visitor worker using the provided Redis client."""
-    from workers.visitor import VisitorWorker
-
-    worker = VisitorWorker(cfg, redis_client)
-    worker.start()
-    if worker.running:
-        app.state.visitor_worker = worker
-    else:
-        app.state.visitor_worker = None
-        logger.warning("Visitor worker not running; disabling")
-
-
 async def start_background_workers(
     app: FastAPI,
     cfg: dict[str, Any],
@@ -122,7 +107,6 @@ async def start_background_workers(
     await preload_models(cfg)
     worker_defs = [
         ("ppe-detector", lambda: ppe_worker(app, cfg, trackers, redis_client)),
-        ("visitor-worker", lambda: visitor_worker(app, cfg, redis_client)),
     ]
 
     tasks = [

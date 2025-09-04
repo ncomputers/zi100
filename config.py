@@ -52,9 +52,6 @@ def set_config(cfg: dict) -> None:
     FACE_THRESHOLDS.recognition_match = config.get(
         "face_match_thresh", FACE_THRESHOLDS.recognition_match
     )
-    FACE_THRESHOLDS.db_duplicate = config.get(
-        "face_db_dup_thresh", FACE_THRESHOLDS.db_duplicate
-    )
     FACE_THRESHOLDS.duplicate_suppression = config.get(
         "face_duplicate_thresh", FACE_THRESHOLDS.duplicate_suppression
     )

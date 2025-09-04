@@ -207,22 +207,6 @@ def process_frame(
                                             tracker.out_counts.get("face", 0) + 1
                                         )
                                     updated = True
-                                    face_entry = {
-                                        "ts": ts,
-                                        "cam_id": tracker.cam_id,
-                                        "track_id": tid,
-                                        "direction": direction,
-                                        "label": "face",
-                                    }
-                                    tracker.redis.zadd(
-                                        "face_logs",
-                                        {json.dumps(face_entry): face_entry["ts"]},
-                                    )
-                                    trim_sorted_set_sync(
-                                        tracker.redis,
-                                        "face_logs",
-                                        face_entry["ts"],
-                                    )
                                 break
         tracker.tracks = new_tracks
         if {"in_count", "out_count"} & set(
@@ -661,9 +645,6 @@ class PersonTracker:
         self.face_tracking_enabled = bool(
             features.get("in_out_counting") and features.get("face_recognition")
         )
-        self.face_db_enabled = bool(
-            features.get("visitor_mgmt") or features.get("face_recognition")
-        )
         self.face_tracker = None
         self.face_detector = None
         self.face_best: dict[int, tuple[float, str]] = {}
@@ -832,43 +813,7 @@ class PersonTracker:
 
     # _log_face_snapshot routine
     def _log_face_snapshot(self, tid: int) -> None:
-        data = self.face_best.pop(tid, None)
-        if not data:
-            return
-        conf, path = data
-        ts = int(time.time())
-        entry = {"ts": ts, "cam_id": self.cam_id, "track_id": tid, "path": path}
-        self.redis.zadd("face_logs", {json.dumps(entry): ts})
-        trim_sorted_set_sync(self.redis, "face_logs", ts)
-        if self.face_db_enabled:
-            try:
-                img = cv2.imread(path)
-                if img is None:
-                    raise ValueError("failed to read face snapshot")
-                rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                detector = getattr(self, "_snapshot_detector", None)
-                if detector is None:
-                    detector = self._snapshot_detector = FaceDetector()
-                faces = detector.detect(rgb)
-                if len(faces) != 1:
-                    logger.warning(
-                        f"[{self.cam_id}] track {tid}: expected 1 face, found {len(faces)}; skipping face_db insert"
-                    )
-                    return
-                with open(path, "rb") as f:
-                    buf = f.read()
-                from modules import face_db
-
-                try:
-                    face_db.insert(
-                        buf, str(tid), source="stream", camera_id=str(self.cam_id)
-                    )
-                except ValueError as exc:
-                    logger.warning(f"face_db insert failed: {exc}")
-                except Exception:
-                    logger.exception("face_db insert failed")
-            except Exception:
-                logger.exception("face snapshot processing failed")
+        self.face_best.pop(tid, None)
 
     # _finalize_face_tracks routine
     def _finalize_face_tracks(self) -> None:
