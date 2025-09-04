@@ -1,10 +1,10 @@
 # Architecture Overview
 
 ## System Goals and Components
-The Crowd Management System provides real-time person counting, PPE detection, and visitor management. It is built around several major components:
+The Crowd Management System provides real-time person counting and PPE detection. It is built around several major components:
 
 - **Web Server** – FastAPI application that serves the dashboard and REST APIs.
-- **Workers** – Background tasks such as `PersonTracker`, `PPEWorker`, and `VisitorWorker` that process camera streams and handle business logic.
+- **Workers** – Background tasks such as `PersonTracker` and `PPEWorker` that process camera streams and handle business logic.
 - **Redis** – Central datastore and message broker used for events, metrics, and queues.
 - **Models** – YOLO models for person and PPE detection loaded through the model registry.
 
@@ -14,7 +14,7 @@ Camera Streams --> PersonTracker --> Redis --> Dashboard
 ```
 1. Cameras stream frames via GStreamer or FFmpeg.
 2. `PersonTracker` analyzes frames and writes events to Redis streams.
-3. Background workers consume those streams for PPE checks and visitor handling.
+3. Background workers consume those streams for PPE checks.
 4. The web dashboard subscribes to Redis to display live counts and alerts.
 
 ### Capture Pipeline
@@ -35,9 +35,9 @@ ffmpeg -rtsp_transport tcp -i {url} -f rawvideo -pix_fmt bgr24 -
                         Redis streams & queues
                                    |
                          +------------------+
-                         |    Workers       |
-                         | (PersonTracker,  |
-                         |  PPE, Visitors)  |
+                          |    Workers       |
+                          | (PersonTracker,  |
+                          |       PPE)       |
                          +------------------+
 ```
 

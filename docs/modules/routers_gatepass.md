@@ -42,6 +42,5 @@ Refer to function signatures above for inputs and outputs.
 - time
 - typing
 - urllib.parse
-- utils.face_db_utils
 - utils.redis
 - uuid

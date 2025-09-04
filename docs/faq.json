@@ -1,7 +1,6 @@
 [
   {"question": "How do I reset my password?", "answer": "Use the 'Change Password' option in your profile."},
   {"question": "Does the system support license plate recognition?", "answer": "Yes, the camera module can detect license plates if configured."},
-  {"question": "How can I configure cameras for face capture?", "answer": "Visit Settings → Cameras and specify the capture parameters."},
   {"question": "Can I customize company branding?", "answer": "Edit `branding.json` and upload custom logos in the Branding section."},
   {"question": "How do I update the system to a newer version?", "answer": "Pull the latest code from the repository and redeploy per deployment docs."},
   {"question": "How can I report a bug or request a feature?", "answer": "Submit issues via the project's issue tracker or contact support."},

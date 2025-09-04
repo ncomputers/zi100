@@ -32,6 +32,8 @@ required for upgrades or fresh installs.
 
 ## Features
 
+Face recognition functionality has been removed; the system now focuses on person counting and PPE checks.
+
 - **Multiple camera sources**: Add HTTP or RTSP cameras via the settings page.
 - **Person counting and PPE checks**: YOLOv8 is used for person detection and, when enabled, for verifying required PPE.
 - **Counting and alerts**: Tracks entries/exits and can send email alerts based on customizable rules.
@@ -51,8 +53,6 @@ required for upgrades or fresh installs.
   sorted sets for efficient range queries.
 - **Redis stream debug**: Stats are also written to `stats_stream` for reliable debugging.
 - **Dashboard timeframe filter**: Choose Today, Last 7 Days, Last 30 Days, This Month or Year for stats.
-- **Redis hash storage**: Known and unregistered faces are stored as hashes for efficient access.
-- **Face embeddings**: Each face record saves an `embedding` vector for similarity searches.
 - **Export module**: CSV and Excel exports share a common implementation for reports and logs.
 - **Branding → Company Logo now updates live; if you still see the old image, clear browser cache.**
 - **GStreamer streaming**: RTSP cameras use GPU decoding via `nvh264dec` and a leaky queue to drop stale frames for low latency.
@@ -67,7 +67,6 @@ Fields accepted by the camera creation endpoint:
 - `transport`
 - `resolution`
 - `ppe`
-- `face_recog`
 - `inout_count`
 - `reverse`
 - `show`
@@ -83,67 +82,6 @@ curl -X POST http://localhost:8000/cameras \
   -H "Content-Type: application/json" \
   -d '{"name":"Gate","url":"rtsp://cam/stream","orientation":"normal","transport":"tcp","resolution":"original","enabled":true}'
 ```
-
-## Faces API
-
-`GET /api/faces` returns paginated face records.
-
-### Query Parameters
-
-- `status` – one of `known`, `unregistered`, `pending`, or `deleted` (default `known`).
-- `q` – optional substring match on the face name.
-- `from`, `to` – ISO 8601 datetimes to bound `last_seen_at`.
-- `camera_ids` – repeatable camera ID filter.
-- `sort` – `last_seen_desc` (default), `last_seen_asc`, `first_seen_asc`,
-  `first_seen_desc`, `name_asc`, or `name_desc`.
-- `limit` – results per page (1–100, default 20).
-- `cursor` – opaque token for cursor-based pagination.
-
-### Cursor Pagination
-
-Responses include `next_cursor` and `prev_cursor`. Pass either value to the
-`cursor` parameter to navigate forward or backward.
-
-### Example
-
-```bash
-curl 'http://localhost:8000/api/faces?status=known&limit=2'
-```
-
-```json
-{
-  "faces": [
-    {
-      "id": "abc123",
-      "name": "Jane Doe",
-      "thumbnail_url": "/faces/abc123.jpg",
-      "last_seen_at": 1700000000,
-      "first_seen_at": 1699990000,
-      "camera": { "id": "1", "label": "Lobby" },
-      "status": "known"
-    }
-  ],
-  "counts": {
-    "known_count": 1,
-    "unregistered_count": 0,
-    "pending_count": 0,
-    "deleted_count": 0
-  },
-  "total_estimate": 1,
-  "next_cursor": "eyJ2IjoxfQ",
-  "prev_cursor": null
-}
-```
-
-## Face DB UI
-
-The Face DB page provides a filter bar with:
-
-- search, date range, and camera filters
-- sorting by last or first seen time or by name
-- page size choices of 20, 50, or 100 results
-
-Accessible labels and live region updates ensure screen reader support.
 
 ## Installation
 
@@ -290,7 +228,7 @@ Logging is configured via [`logging_config.py`](logging_config.py) using Loguru 
 
 ## Licensing
 
-The application verifies the `license_key` on startup but will still run if the token is missing or invalid. Feature limits remain disabled until a valid key is activated. Use the **Settings** page (or `/license` endpoint) to update the key at runtime. The page shows license details such as client name, enabled features and expiration. Administrators can generate keys with `key_gen.py` or `license_generator.py`, enabling optional modules like PPE Detection, Visitor Management and Face Recognition.
+The application verifies the `license_key` on startup but will still run if the token is missing or invalid. Feature limits remain disabled until a valid key is activated. Use the **Settings** page (or `/license` endpoint) to update the key at runtime. The page shows license details such as client name, enabled features and expiration. Administrators can generate keys with `key_gen.py` or `license_generator.py`, enabling optional modules like PPE Detection and Visitor Management.
 
 ## Running
 
@@ -338,34 +276,6 @@ networks, or lower for minimal latency. Worst-case latency is roughly
 - `templates/` – HTML templates rendered by FastAPI.
 - `public/` – Optional PHP pages.
 - `tests/` – Simple unit tests.
-
-### Face Recognition
-
-Captured face photos are processed with
-the `buffalo_l` model. When a single face is detected the embedding is saved in
-Redis under `face_db` and appended to an in-memory FAISS index that is
-reconstructed from Redis on startup. Similarity search is exposed via
-`/api/faces/search` which returns the top matches and cosine scores. A score of
-`0.4` or greater is typically considered a strong match.
-
-#### FAISS Index Maintenance
-
-The FAISS index mirrors embeddings stored in Redis. `id_map` ordering is
-persisted in the `face:id_map` list and the index is rebuilt automatically on
-startup. If the index becomes corrupted or desynchronized, clear the list and
-reinitialize:
-
-```python
-from modules import face_db
-from config import config
-import redis
-
-r = redis.Redis()  # configure as needed
-r.delete('face:id_map')
-face_db.init(config, r)
-```
-
-Restarting the service will load the regenerated index.
 
 ## Development Tips
 
@@ -441,7 +351,6 @@ The repository contains the following files:
 
 - `templates/*.html` – Jinja2 templates for the web UI.
 - `templates/partials/header.html` and `footer.html` – shared layout pieces.
-- `templates/face_search.html` – standalone template used for the Face DB search form.
 
 ### static
 
@@ -498,12 +407,6 @@ Detailed documentation for internal modules and routers is available below.
 - [duplicate_filter](docs/modules/modules_duplicate_filter.md)
 - [email_utils](docs/modules/modules_email_utils.md)
 - [export](docs/modules/modules_export.md)
-- [face_db](docs/modules/modules_face_db.md)
-- [face_engine**\_init**](docs/modules/modules_face_engine___init__.md)
-- [face_engine_detector](docs/modules/modules_face_engine_detector.md)
-- [face_engine_embedder](docs/modules/modules_face_engine_embedder.md)
-- [face_engine_router](docs/modules/modules_face_engine_router.md)
-- [face_engine_utils](docs/modules/modules_face_engine_utils.md)
 - [ffmpeg_stream](docs/modules/modules_ffmpeg_stream.md)
 - [gatepass_service](docs/modules/modules_gatepass_service.md)
 - [gstreamer_stream](docs/modules/modules_gstreamer_stream.md)
@@ -521,7 +424,6 @@ Detailed documentation for internal modules and routers is available below.
 
 - [**init**](docs/modules/routers___init__.md)
 - [alerts](docs/modules/routers_alerts.md)
-- [api_faces](docs/modules/routers_api_faces.md)
 - [auth](docs/modules/routers_auth.md)
 - [blueprints](docs/modules/routers_blueprints.md)
 - [cameras](docs/modules/routers_cameras.md)

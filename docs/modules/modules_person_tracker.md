@@ -5,7 +5,6 @@
 Purpose: Person tracker module.
 
 ## Key Classes
-- **UniqueFaceCounter** - Filter to count unique faces using embeddings.
 - **PersonTracker** - Tracks entry and exit counts using YOLOv8 and DeepSORT.
 
 ## Key Functions
@@ -38,7 +37,6 @@ Refer to function signatures above for inputs and outputs.
 - json
 - loguru
 - modules.profiler
-- workers.visitor.recognizer
 - numpy
 - overlay
 - pathlib
