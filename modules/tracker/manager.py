@@ -615,10 +615,10 @@ class PersonTracker:
         self.out_queue = queue.Queue(maxsize=qsize)
         log_mem("Before loading plate model")
         try:
+            plate_path = cfg.get("plate_model") or "license_plate_detector.pt"
+            logger.info(f"Plate model: {plate_path}")
             start = time.perf_counter()
-            self.model_plate = get_yolo(
-                cfg.get("plate_model", "license_plate_detector.pt"), self.device
-            )
+            self.model_plate = get_yolo(plate_path, self.device)
             self.load_durations["plate_model"] = time.perf_counter() - start
             logger.info(
                 "Plate model loaded in {:.2f}s",
