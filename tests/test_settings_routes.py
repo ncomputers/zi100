@@ -128,14 +128,3 @@ def test_settings_page_persists_values(tmp_path):
     asyncio.run(settings.update_settings(req))
     resp = asyncio.run(settings.settings_page(DummyRequest()))
     assert resp.context["cfg"]["max_capacity"] == 25
-
-
-def test_vms_requires_license(tmp_path):
-    cfg, _ = setup_context(tmp_path)
-    cfg["license_info"] = {"features": {"visitor_mgmt": False}}
-    cfg["features"] = {"visitor_mgmt": False}
-    req = DummyRequest(form={"password": "pass", "visitor_mgmt": "on"})
-    with pytest.raises(HTTPException) as exc:
-        asyncio.run(settings.update_settings(req))
-    assert exc.value.status_code == 403
-    assert cfg["features"]["visitor_mgmt"] is False

@@ -17,7 +17,6 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from loguru import logger
 
 from config import config
-from modules import visitor_db
 from modules.email_utils import send_email
 from modules.utils import require_viewer
 from utils.ids import generate_id
@@ -99,11 +98,13 @@ def _generate_gatepass(obj: dict, iid: str, request: Request | None = None):
 
     from . import Path
 
-    existing = gatepass.redis.hget("gatepass:by_invite", iid) if gatepass.redis else None
+    existing = (
+        gatepass.redis.hget("gatepass:by_invite", iid) if gatepass.redis else None
+    )
     gate_id = (
-        existing.decode() if isinstance(existing, bytes) else existing
-        if existing
-        else f"GP{generate_id()[:8].upper()}"
+        existing.decode()
+        if isinstance(existing, bytes)
+        else existing if existing else f"GP{generate_id()[:8].upper()}"
     )
     photo_b64 = ""
     photo_url = obj.get("photo_url", "")
@@ -298,11 +299,7 @@ async def invite_create(
         except Exception:
             pass
     # notify host for approval
-    try:
-        host_info = visitor_db.get_host(host or "") or {}
-        host_email = host_info.get("email", "") if isinstance(host_info, dict) else ""
-    except Exception:
-        host_email = ""
+    host_email = ""
     if host:
         _save_host_master(host, host_email)
     if host_email:
@@ -399,14 +396,7 @@ async def invite_list(
 @router.get("/invite/lookup")
 async def invite_lookup(phone: str, ctx: SimpleNamespace = Depends(get_context)):
     """Lookup visitor info by phone number."""
-    info = visitor_db.get_visitor_by_phone(phone)
-    if not info:
-        return {}
-    entries = [json.loads(e) for e in ctx.redis.zrevrange("vms_logs", 0, -1)]
-    visits = [e for e in entries if e.get("phone") == phone]
-    info["visits"] = len(visits)
-    info["last_id"] = visits[0].get("visitor_id") if visits else info.get("id")
-    return info
+    return {}
 
 
 @router.get("/invite/form")
@@ -604,9 +594,17 @@ async def invite_public_submit(
     valid_sources = {"upload", "camera", "none"}
     if photo_source not in valid_sources:
         errors["photo_source"] = "invalid"
-    if photo_source in {"upload", "camera"} and not photo.strip() and not rec.get("photo_url", "").strip():
+    if (
+        photo_source in {"upload", "camera"}
+        and not photo.strip()
+        and not rec.get("photo_url", "").strip()
+    ):
         errors["photo"] = "Photo is required"
-    if photo_source == "none" and photo_waived != "on" and not rec.get("photo_url", "").strip():
+    if (
+        photo_source == "none"
+        and photo_waived != "on"
+        and not rec.get("photo_url", "").strip()
+    ):
         errors["photo"] = "Photo is required"
     if errors:
         return JSONResponse({"errors": errors}, status_code=400)
@@ -726,9 +724,9 @@ async def invite_public_submit(
 
         existing = ctx.redis.hget("gatepass:by_invite", id)
         gate_id = (
-            existing.decode() if isinstance(existing, bytes) else existing
-            if existing
-            else f"GP{generate_id()[:8].upper()}"
+            existing.decode()
+            if isinstance(existing, bytes)
+            else existing if existing else f"GP{generate_id()[:8].upper()}"
         )
         photo_b64 = ""
         photo_url = rec.get("photo_url", "")

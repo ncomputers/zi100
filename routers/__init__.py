@@ -8,6 +8,8 @@ __all__ = [
     "reports",
     "ppe_reports",
     "settings",
+    "entry",
+    "gatepass",
     "api_faces",
     "api_identities",
     "blueprints",

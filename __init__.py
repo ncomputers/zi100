@@ -1,4 +1,4 @@
-"""Top-level package for the VMS application."""
+"""Top-level package for the application."""
 
 from __future__ import annotations
 

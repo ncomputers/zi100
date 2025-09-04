@@ -14,7 +14,7 @@ from fastapi.templating import Jinja2Templates
 from loguru import logger
 
 from config import config
-from modules import face_db, visitor_db
+from modules import face_db
 from utils.redis import trim_sorted_set
 
 from .face_loader import load_faces
@@ -62,27 +62,7 @@ def _save_visitor_master(
     """Persist visitor info and return visitor_id."""
     if not phone:
         raise ValueError("phone required")
-    try:
-        data = json.dumps(
-            {
-                "email": email,
-                "phone": phone,
-                "visitor_type": visitor_type,
-                "company": company_name,
-                "photo_url": photo_url,
-            }
-        )
-        redis_client = getattr(visitor_db, "_redis", None) or _ctx.redis
-        if not redis_client:
-            raise RuntimeError("redis not initialized")
-        redis_client.hset("visitor:master", name, data)
-        vid = visitor_db.get_or_create_visitor(
-            name, phone, email, company_name, photo_url
-        )
-        return vid
-    except Exception as exc:  # pragma: no cover - defensive
-        logger.exception("failed to save visitor master {}: {}", name, exc)
-        raise RuntimeError("failed to save visitor master") from exc
+    raise RuntimeError("visitor management disabled")
 
 
 # _save_host_master routine
@@ -92,14 +72,7 @@ def _save_host_master(host: str, email: str = "") -> None:
     host = host or config.get("default_host", "")
     if not host:
         raise ValueError("host required")
-    try:
-        data = json.dumps({"email": email})
-        _ctx.redis.hset("host_master", host, data)
-        visitor_db.save_host(host, email)
-        invalidate_host_cache()
-    except Exception as exc:  # pragma: no cover - defensive
-        logger.exception("failed to save host master {}: {}", host, exc)
-        raise RuntimeError("failed to save host master") from exc
+    raise RuntimeError("visitor management disabled")
 
 
 # ---------------------------------------------------------------------------
@@ -244,7 +217,6 @@ def init_context(
 
     face_app = None
 
-    visitor_db.init_db(redis_client)
     try:  # pragma: no cover - init failures
         face_db.init(cfg, redis_client)
         face_app = face_db.face_app
@@ -299,7 +271,7 @@ def _search_embeddings(
 # ---------------------------------------------------------------------------
 router = APIRouter()
 
-from . import faces, invites, registration, visit_requests  # noqa: E402
+from . import faces, invites  # noqa: E402
 
 # Re-export invite creation helper for external access/tests
 from .invites import (  # noqa: F401
@@ -312,12 +284,9 @@ from .invites import (  # noqa: F401
     invite_public_form,
     invite_public_submit,
 )
-from .registration import custom_report  # noqa: F401
 
-router.include_router(registration.router)
 router.include_router(faces.router)
 router.include_router(invites.router)
-router.include_router(visit_requests.router)
 
 __all__ = [
     "router",
@@ -339,5 +308,4 @@ __all__ = [
     "invite_public_submit",
     "invite_complete_submit",
     "invite_approve",
-    "custom_report",
 ]
