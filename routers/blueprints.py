@@ -4,16 +4,9 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from . import alerts, api_identities, auth
-
+from . import alerts, api_alerts, api_identities, auth
 from . import cameras as cam_routes
-from . import (
-    config_api,
-    dashboard,
-    detections,
-    feedback,
-    health,
-)
+from . import config_api, dashboard, detections, feedback, health
 from . import help as help_pages
 from . import mcp, ppe_reports, profile, reports, rtsp, settings
 from .admin import users as admin_users
@@ -28,6 +21,7 @@ MODULES = [
     alerts,
     auth,
     admin_users,
+    api_alerts,
     api_identities,
     health,
     profile,
