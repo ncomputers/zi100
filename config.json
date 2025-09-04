@@ -1,6 +1,6 @@
 {
   "stream_url": "http://localhost/zm/cgi-bin/nph-zms?mode=jpeg&monitor=20",
-  "person_model": "",
+  "person_model": "models/yolov8n.pt",
   "ppe_model": "",
   "plate_model": "",
   "device": "auto",

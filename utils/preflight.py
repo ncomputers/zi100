@@ -74,3 +74,10 @@ def check_dependencies(cfg: dict, base_dir: str | Path | None = None) -> None:
 
     if missing:
         logger.warning("Model files missing: {}", ", ".join(missing))
+
+    if cfg.get("enable_person_tracking"):
+        model = cfg.get("person_model")
+        if not model:
+            raise DependencyError("person_model not configured")
+        if model in missing:
+            raise DependencyError(f"person_model file not found: {model}")
