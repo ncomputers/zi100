@@ -13,7 +13,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Annotated, AsyncIterator, Dict, Iterable
 
-import cv2
+import io
+from mjpeg.server import MJPEGResponse
+from PIL import Image
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import (
     HTMLResponse,
@@ -389,7 +391,7 @@ async def _stream_response(
     if not tr:
         return HTMLResponse("Not found", status_code=404)
 
-    async def gen():
+    def gen():
         if not raw:
             tr.viewers += 1
             if tr.viewers == 1:
@@ -404,7 +406,7 @@ async def _stream_response(
                             f"[{cam_id}] No frame for {'clean' if raw else 'preview'}"
                         )
                         no_frame_logged = True
-                    await asyncio.sleep(0.1)
+                    time.sleep(0.1)
                     continue
                 if no_frame_logged:
                     logger.info(
@@ -413,21 +415,21 @@ async def _stream_response(
                     no_frame_logged = False
                 if raw and hasattr(frame, "download"):
                     frame = frame.download()
-                _, buf = cv2.imencode(".jpg", frame)
-                yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf.tobytes() + b"\r\n"
+                img = Image.fromarray(frame[:, :, ::-1])
+                buf = io.BytesIO()
+                img.save(buf, format="JPEG")
+                yield buf.getvalue()
                 if not raw:
-                    await asyncio.sleep(1 / tr.fps)
+                    time.sleep(1 / tr.fps)
         finally:
             if not raw:
                 tr.viewers -= 1
                 if tr.viewers == 0:
                     tr.restart_capture = True
 
-    return StreamingResponse(
-        gen(),
-        media_type="multipart/x-mixed-replace; boundary=frame",
-        headers={"Access-Control-Allow-Origin": "*"},
-    )
+    resp = MJPEGResponse(gen())
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    return resp
 
 
 @router.get("/stream/preview/{cam_id}")

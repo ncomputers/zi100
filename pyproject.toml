@@ -40,6 +40,8 @@ dependencies = [
     "fastapi-csrf-protect",
     "ffmpeg-python",
     "keyring",
+    "py-mjpeg",
+    "Flask",
 ]
 
 [tool.black]

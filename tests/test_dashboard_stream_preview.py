@@ -1,8 +1,11 @@
 import asyncio
+import types
+import sys
 
 import numpy as np
 from starlette.requests import Request
 
+sys.modules['cv2'] = types.SimpleNamespace()
 from routers.dashboard import stream_preview
 
 
@@ -23,9 +26,9 @@ def test_stream_preview_returns_frame(monkeypatch):
     async def _run() -> None:
         req = Request({"type": "http", "session": {"user": {"role": "viewer"}}})
         resp = await stream_preview(1, req, {1: tracker})
-        gen = resp.body_iterator
-        chunk = await gen.__anext__()
-        assert b"--frame" in chunk
-        await gen.aclose()
+        gen = resp.response
+        chunk = next(gen)
+        assert b"--herebedragons" in chunk
+        gen.close()
 
     asyncio.run(_run())
