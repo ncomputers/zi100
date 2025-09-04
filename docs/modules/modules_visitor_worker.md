@@ -11,7 +11,7 @@ disabled.
 - **VisitorWorker** - Continuously process frames for visitor recognition.
 
 ## Key Functions
-- **_blur_score(img)** - 
+None
 
 ## Inputs and Outputs
 Refer to function signatures above for inputs and outputs.

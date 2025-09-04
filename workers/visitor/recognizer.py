@@ -4,14 +4,9 @@ import json
 from collections import deque
 from typing import Dict, Optional
 
-import cv2
 import numpy as np
+
 from config import FACE_THRESHOLDS
-
-
-def _blur_score(img: np.ndarray) -> float:
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    return float(cv2.Laplacian(gray, cv2.CV_64F).var())
 
 
 class FaceRecognizer:
@@ -36,9 +31,7 @@ class FaceRecognizer:
     def identify(self, emb: np.ndarray) -> Optional[str]:
         if not self.known:
             return None
-        thresh = self.cfg.get(
-            "face_match_thresh", FACE_THRESHOLDS.recognition_match
-        )
+        thresh = self.cfg.get("face_match_thresh", FACE_THRESHOLDS.recognition_match)
         names = list(self.known.keys())
         arr = np.stack([self.known[n] for n in names])
         dists = np.linalg.norm(arr - emb, axis=1)
