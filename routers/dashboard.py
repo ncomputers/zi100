@@ -119,7 +119,6 @@ def aggregate_metrics(
         "anomaly_counts": anomaly_totals,
         "current": current_val,
         "current_occupancy": current_val,
-        "total_visitors": sum(in_counts),
         "vehicles_detected": sum(vehicle_counts),
         "safety_violations": sum(anomaly_totals.values()),
     }

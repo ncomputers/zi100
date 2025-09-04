@@ -102,13 +102,6 @@ def parse_basic_settings(data: dict) -> dict:
         "profiling_interval",
         "stream_mode",
         "face_match_thresh",
-        "visitor_model",
-        "visitor_conf_thresh",
-        "visitor_sim_thresh",
-        "visitor_min_face_size",
-        "visitor_blur_thresh",
-        "visitor_size_thresh",
-        "visitor_fps_skip",
         "face_count_conf",
         "face_count_similarity",
         "face_count_min_size",
@@ -145,17 +138,6 @@ def parse_basic_settings(data: dict) -> dict:
         new_cfg["preview_anomalies"] = data["preview_anomalies"]
     if data.get("track_objects"):
         new_cfg["track_objects"] = data["track_objects"]
-    if "visitor_mgmt" in data:
-        enable = str(data["visitor_mgmt"]).lower() in {"on", "true", "1"}
-        licensed = (
-            new_cfg.get("license_info", {})
-            .get("features", {})
-            .get("visitor_mgmt", True)
-        )
-        if enable and not licensed:
-            logger.warning("visitor management not licensed; ignoring enable request")
-            enable = False
-        new_cfg.setdefault("features", {})["visitor_mgmt"] = enable
     return new_cfg
 
 

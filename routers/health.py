@@ -19,12 +19,10 @@ def _workers_ready(app) -> bool:
         info["capture_alive"] and info["process_alive"] for info in trackers.values()
     )
     ppe_worker = getattr(app.state, "ppe_worker", None)
-    visitor_worker = getattr(app.state, "visitor_worker", None)
     alert_worker = getattr(app.state, "alert_worker", None)
     return (
         trackers_ready
         and (ppe_worker is None or getattr(ppe_worker, "running", False))
-        and (visitor_worker is None or getattr(visitor_worker, "running", False))
         and (alert_worker is None or getattr(alert_worker, "running", False))
     )
 

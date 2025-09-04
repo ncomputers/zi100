@@ -49,11 +49,7 @@ async def alerts_page(
     res = require_roles(request, ["admin"])
     if isinstance(res, RedirectResponse):
         return res
-    items = list(ANOMALY_ITEMS) + sorted(
-        events.ALL_EVENTS - {events.VISITOR_REGISTERED}
-    )
-    if cfg.get("features", {}).get("visitor_mgmt"):
-        items.append(events.VISITOR_REGISTERED)
+    items = list(ANOMALY_ITEMS) + sorted(events.ALL_EVENTS)
     token, signed = csrf_protect.generate_csrf_tokens()
     # Render the template immediately so tests can access ``response.body``
     html = templates.get_template("email_alerts.html").render(
@@ -84,8 +80,6 @@ async def save_alerts(
     data = await request.json()
     rules_data = data.get("rules", [])
     allowed = set(ANOMALY_ITEMS) | events.ALL_EVENTS
-    if not cfg.get("features", {}).get("visitor_mgmt"):
-        allowed.discard(events.VISITOR_REGISTERED)
     AlertRule.allowed_metrics = allowed
     validated = []
     for r in rules_data:

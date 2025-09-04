@@ -20,8 +20,6 @@ async function load(){
       return;
     }
     if(errEl) errEl.textContent='';
-    const tv=document.getElementById('kpi_total_visitors');
-    if(tv) tv.textContent=d.total_visitors??0;
     const co=document.getElementById('kpi_current_occupancy');
     if(co) co.textContent=d.current??0;
     const vd=document.getElementById('kpi_vehicles_detected');

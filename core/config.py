@@ -107,12 +107,12 @@ AVAILABLE_CLASSES = (
 # can be combined with PPE detection tasks. PPE tasks are expanded into
 # their presence/absence pairs so callers don't have to worry about the
 # mapping order when importing this module.
-CAMERA_TASKS = ["in_count", "out_count", "full_monitor", "visitor_mgmt"] + MODEL_CLASSES
+CAMERA_TASKS = ["in_count", "out_count", "full_monitor"] + MODEL_CLASSES
 
 # Tasks shown on the camera page UI (only PPE-related classes). Defined
 # after ``PPE_TASKS`` to avoid NameError on older Python versions where
 # module-level forward references are not allowed.
-UI_CAMERA_TASKS = ["in_out_counting", "visitor_mgmt"] + PPE_TASKS
+UI_CAMERA_TASKS = ["in_out_counting"] + PPE_TASKS
 
 # Default configuration values for :func:`load_config`.
 CONFIG_DEFAULTS = {
@@ -156,17 +156,9 @@ CONFIG_DEFAULTS = {
     "features": {
         "in_out_counting": True,
         "ppe_detection": True,
-        "visitor_mgmt": False,
         "face_recognition": False,
     },
-    "visitor_model": "buffalo_l",
     "face_match_thresh": 0.6,
-    "visitor_conf_thresh": 0.85,
-    "visitor_sim_thresh": 0.85,
-    "visitor_min_face_size": 80,
-    "visitor_blur_thresh": 150,
-    "visitor_size_thresh": 10000,
-    "visitor_fps_skip": 2,
     "show_face_boxes": False,
     "debug_logs": False,
     "enable_face_recognition": True,

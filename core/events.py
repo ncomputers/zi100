@@ -15,13 +15,6 @@ FAILED_LOGIN = "failed_login"
 FACE_UNRECOGNIZED = "face_unrecognized"
 FACE_BLURRY = "face_blurry"
 
-# Gate pass events
-GATEPASS_APPROVED = "gatepass_approved"
-GATEPASS_REJECTED = "gatepass_rejected"
-GATEPASS_OVERDUE = "gatepass_overdue"
-
-# Visitor management events
-VISITOR_REGISTERED = "visitor_registered"
 
 # Camera/streaming events
 CAMERA_OFFLINE = "camera_offline"
@@ -38,10 +31,6 @@ ALL_EVENTS = {
     FAILED_LOGIN,
     FACE_UNRECOGNIZED,
     FACE_BLURRY,
-    GATEPASS_APPROVED,
-    GATEPASS_REJECTED,
-    GATEPASS_OVERDUE,
-    VISITOR_REGISTERED,
     CAMERA_OFFLINE,
     NETWORK_USAGE_HIGH,
     NETWORK_USAGE_LOW,
@@ -54,10 +43,6 @@ __all__ = [
     "FAILED_LOGIN",
     "FACE_UNRECOGNIZED",
     "FACE_BLURRY",
-    "GATEPASS_APPROVED",
-    "GATEPASS_REJECTED",
-    "GATEPASS_OVERDUE",
-    "VISITOR_REGISTERED",
     "CAMERA_OFFLINE",
     "NETWORK_USAGE_HIGH",
     "NETWORK_USAGE_LOW",
