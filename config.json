@@ -1,8 +1,8 @@
 {
   "stream_url": "http://localhost/zm/cgi-bin/nph-zms?mode=jpeg&monitor=20",
-  "person_model": "yolov8n.pt",
-  "ppe_model": "mymodalv7.pt",
-  "plate_model": "license_plate_detector.pt",
+  "person_model": "",
+  "ppe_model": "",
+  "plate_model": "",
   "device": "auto",
   "headless": false,
   "license_key": "eyJleHAiOjE3NTcyNjgwNTcsIm1heF9jYW1lcmFzIjozLCJmZWF0dXJlcyI6eyJpbl9vdXRfY291bnRpbmciOnRydWUsInBwZV9kZXRlY3Rpb24iOnRydWUsInZpc2l0b3JfbWdtdCI6dHJ1ZSwiZmFjZV9yZWNvZ25pdGlvbiI6dHJ1ZX0sImNsaWVudCI6ImRlbW8ifQ.VLsvp7whEf_femOFCESokHvyM9ZeoNbXSe-AO6DpUTc",

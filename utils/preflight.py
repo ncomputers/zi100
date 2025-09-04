@@ -73,4 +73,4 @@ def check_dependencies(cfg: dict, base_dir: str | Path | None = None) -> None:
             missing.append(model)
 
     if missing:
-        raise DependencyError("Missing dependencies: " + ", ".join(missing))
+        logger.warning("Model files missing: {}", ", ".join(missing))

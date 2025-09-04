@@ -42,9 +42,17 @@ async def preload_models(cfg: dict[str, Any]) -> None:
     tasks = []
     person_model = cfg.get("person_model")
     if person_model:
-        tasks.append(_load(lambda: get_yolo(person_model, device), f"{person_model}"))
+        pm_path = Path(person_model)
+        if pm_path.is_file():
+            tasks.append(_load(lambda: get_yolo(person_model, device), f"{person_model}"))
+        else:
+            logger.warning("Person model not found: {}", person_model)
     plate_model = cfg.get("plate_model", "license_plate_detector.pt")
-    tasks.append(_load(lambda: get_yolo(plate_model, device), f"{plate_model}"))
+    plate_path = Path(plate_model)
+    if plate_path.is_file():
+        tasks.append(_load(lambda: get_yolo(plate_model, device), f"{plate_model}"))
+    else:
+        logger.warning("Plate model not found: {}", plate_model)
     if tasks:
         await asyncio.gather(*tasks)
 
