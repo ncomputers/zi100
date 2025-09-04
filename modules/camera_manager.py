@@ -68,7 +68,6 @@ class CameraManager:
         flags = {
             "enabled": cam.get("enabled", True),
             "ppe": cam.get("ppe", False),
-            "vms": cam.get("visitor_mgmt", False),
             "face": cam.get("face_recognition", False),
             "counting": any(
                 t in cam.get("tasks", []) for t in ("in_count", "out_count")
@@ -87,7 +86,6 @@ class CameraManager:
         flags = {
             "enabled": cam.get("enabled", True),
             "ppe": cam.get("ppe", False),
-            "vms": cam.get("visitor_mgmt", False),
             "face": cam.get("face_recognition", False),
             "counting": any(
                 t in cam.get("tasks", []) for t in ("in_count", "out_count")

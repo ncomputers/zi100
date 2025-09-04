@@ -8,8 +8,7 @@ from loguru import logger
 from redis import Redis
 
 from core.tracker_manager import start_tracker, start_watchdog
-from modules.alerts import AlertWorker
-from modules.model_registry import get_insightface, get_yolo
+from modules.model_registry import get_yolo
 from modules.ppe_worker import PPEDetector
 from modules.tracker import PersonTracker
 from modules.utils import SNAP_DIR
@@ -46,9 +45,6 @@ async def preload_models(cfg: dict[str, Any]) -> None:
         tasks.append(_load(lambda: get_yolo(person_model, device), f"{person_model}"))
     plate_model = cfg.get("plate_model", "license_plate_detector.pt")
     tasks.append(_load(lambda: get_yolo(plate_model, device), f"{plate_model}"))
-    if cfg.get("features", {}).get("visitor_mgmt"):
-        visitor_model = cfg.get("visitor_model", "buffalo_l")
-        tasks.append(_load(lambda: get_insightface(visitor_model), f"{visitor_model}"))
     if tasks:
         await asyncio.gather(*tasks)
 
@@ -73,11 +69,6 @@ async def init_trackers(
     except (RuntimeError, OSError) as e:
         logger.exception("Tracker initialization failed: {}", e)
         raise
-
-
-async def alert_worker(app: FastAPI, cfg: dict[str, Any], redis_client: Redis) -> None:
-    """Launch the alert worker using the provided Redis client."""
-    app.state.alert_worker = AlertWorker(cfg, redis_client, BASE_DIR)
 
 
 async def ppe_worker(
@@ -130,7 +121,6 @@ async def start_background_workers(
     """Preload models and create background tasks."""
     await preload_models(cfg)
     worker_defs = [
-        ("alert-worker", lambda: alert_worker(app, cfg, redis_client)),
         ("ppe-detector", lambda: ppe_worker(app, cfg, trackers, redis_client)),
         ("visitor-worker", lambda: visitor_worker(app, cfg, redis_client)),
     ]
