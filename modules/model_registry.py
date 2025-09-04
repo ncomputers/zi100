@@ -19,15 +19,9 @@ try:  # optional heavy dependency
 except Exception:  # pragma: no cover - optional in tests
     YOLO = None
 
-try:  # optional heavy dependency
-    from insightface.app import FaceAnalysis  # type: ignore
-except Exception:  # pragma: no cover - optional in tests
-    FaceAnalysis = None
-
 from config import config as app_config
 
 _yolo_models: Dict[Tuple[str, str], YOLO] = {}
-_face_models: Dict[Tuple[str, int], FaceAnalysis] = {}
 
 
 def _log_mem(note: str, device: "torch.device | None" = None) -> None:
@@ -65,24 +59,3 @@ def get_yolo(path: str, device: "torch.device | str | None" = None) -> YOLO:
             model.model.half()
         _yolo_models[key] = model
     return model
-
-
-def get_insightface(name: str, det_size: tuple[int, int] = (640, 640)) -> FaceAnalysis:
-    """Return a cached InsightFace ``FaceAnalysis`` instance."""
-    if FaceAnalysis is None:
-        raise RuntimeError("InsightFace not available")
-    dev = get_device()
-    if getattr(dev, "type", "") != "cuda":
-        raise RuntimeError("CUDA device not available for InsightFace")
-    device_cfg = app_config.get("device", "auto")
-    if device_cfg != "auto" and not str(device_cfg).startswith("cuda"):
-        raise RuntimeError("CUDA device required for InsightFace")
-    ctx_id = 0
-    key = (name, ctx_id)
-    app = _face_models.get(key)
-    if app is None:
-        _log_mem(f"Before loading InsightFace model {name}", dev)
-        app = FaceAnalysis(name=name)
-        app.prepare(ctx_id=ctx_id, det_size=det_size)
-        _face_models[key] = app
-    return app

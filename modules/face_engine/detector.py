@@ -14,10 +14,7 @@ try:  # optional heavy dependency
 except ModuleNotFoundError:  # pragma: no cover - torch optional in tests
     torch = None
 
-try:  # optional heavy dependency
-    from insightface.app import FaceAnalysis  # type: ignore
-except Exception:  # pragma: no cover - fallback when insightface unavailable
-    FaceAnalysis = None
+FaceAnalysis = None  # InsightFace dependency removed
 
 from utils.gpu import get_device
 

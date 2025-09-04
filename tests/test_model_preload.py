@@ -10,11 +10,7 @@ def test_preload_models(monkeypatch):
     def fake_get_yolo(path, device):
         calls.append(("yolo", path))
 
-    def fake_get_insightface(name):
-        calls.append(("face", name))
-
     monkeypatch.setattr("startup.get_yolo", fake_get_yolo)
-    monkeypatch.setattr("startup.get_insightface", fake_get_insightface)
     monkeypatch.setattr(
         "utils.gpu.get_device", lambda device=None: SimpleNamespace(type="cpu")
     )
@@ -29,4 +25,3 @@ def test_preload_models(monkeypatch):
 
     assert ("yolo", "p.pt") in calls
     assert ("yolo", "pl.pt") in calls
-    assert ("face", "buffalo_l") in calls

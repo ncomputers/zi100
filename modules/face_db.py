@@ -13,10 +13,7 @@ import psutil
 import redis
 from loguru import logger
 
-if TYPE_CHECKING:  # pragma: no cover - optional import for typing only
-    from insightface.app import FaceAnalysis as FaceApp
-else:  # pragma: no cover - runtime fallback
-    FaceApp = Any  # type: ignore[misc]
+FaceApp = Any  # type: ignore[misc] - InsightFace dependency removed
 
 try:  # optional heavy dependency
     import torch  # type: ignore
@@ -26,44 +23,38 @@ except ModuleNotFoundError:  # pragma: no cover - torch optional in tests
 from config import FACE_THRESHOLDS, config
 from utils.gpu import get_device
 
-try:
-    import faiss  # type: ignore
-except Exception:  # pragma: no cover - fallback stub
-    import types
+import types
+import numpy as _np
 
-    import numpy as _np
 
-    # _StubIndex class encapsulates _stubindex behavior
-    class _StubIndex:
-        # __init__ routine
-        def __init__(self, dim: int):
-            self.dim = dim
-            self.vectors: list[_np.ndarray] = []
+# lightweight FAISS stub since the real dependency is removed
+class _StubIndex:
+    def __init__(self, dim: int):
+        self.dim = dim
+        self.vectors: list[_np.ndarray] = []
 
-        @property
-        # ntotal routine
-        def ntotal(self) -> int:
-            return len(self.vectors)
+    @property
+    def ntotal(self) -> int:
+        return len(self.vectors)
 
-        # add routine
-        def add(self, arr: _np.ndarray) -> None:
-            self.vectors.extend(arr)
+    def add(self, arr: _np.ndarray) -> None:
+        self.vectors.extend(arr)
 
-        # search routine
-        def search(self, arr: _np.ndarray, k: int):
-            if not self.vectors:
-                return _np.zeros((1, k), dtype="float32"), _np.full((1, k), -1)
-            mat = _np.stack(self.vectors)
-            sims = mat @ arr.T
-            idx = _np.argsort(-sims, axis=0)[:k].T
-            D = _np.take_along_axis(sims.T, idx, axis=1)
-            return D.astype("float32"), idx
+    def search(self, arr: _np.ndarray, k: int):
+        if not self.vectors:
+            return _np.zeros((1, k), dtype="float32"), _np.full((1, k), -1)
+        mat = _np.stack(self.vectors)
+        sims = mat @ arr.T
+        idx = _np.argsort(-sims, axis=0)[:k].T
+        D = _np.take_along_axis(sims.T, idx, axis=1)
+        return D.astype("float32"), idx
 
-    faiss = types.SimpleNamespace(
-        IndexFlatIP=_StubIndex,
-        write_index=lambda i, p: None,
-        read_index=lambda p: _StubIndex(512),
-    )
+
+faiss = types.SimpleNamespace(
+    IndexFlatIP=_StubIndex,
+    write_index=lambda i, p: None,
+    read_index=lambda p: _StubIndex(512),
+)
 
 
 FACES_DIR = Path(__file__).resolve().parent.parent / "public" / "faces"
@@ -88,30 +79,8 @@ def queue_reembed(face_id: str) -> None:
 
 
 def _load_face_model(cfg: dict) -> FaceApp | None:
-    """Load the InsightFace model based on ``cfg``.
-
-    Logs resource availability and any errors during model loading to
-    distinguish failures in this phase of initialization.
-    """
-    logger.debug("Loading face analysis model")
-    mem = psutil.virtual_memory()
-    logger.debug(
-        f"Before loading face analysis model: RAM available {mem.available / (1024**3):.2f} GB"
-    )
-    device = get_device()
-    if getattr(device, "type", "") == "cuda" and torch:
-        free, _ = torch.cuda.mem_get_info(device)
-        logger.debug(
-            f"Before loading face analysis model: GPU available {free / (1024**3):.2f} GB"
-        )
-    try:
-        from .model_registry import get_insightface
-
-        return get_insightface(cfg.get("visitor_model", "buffalo_l"))
-    except RuntimeError as e:
-        logger.warning(f"InsightFace load error: {e}. Face database disabled")
-    except Exception:
-        logger.exception("Unexpected error loading face analysis model")
+    """Return ``None`` since InsightFace support has been removed."""
+    logger.debug("Face analysis model unavailable; InsightFace dependency removed")
     return None
 
 

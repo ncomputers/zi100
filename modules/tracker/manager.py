@@ -637,25 +637,6 @@ class PersonTracker:
                 f"Failed to initialize DeepSort: {e}. Disable this feature or use smaller weights.",
             ) from e
         self.face_app = None
-        if cfg.get("features", {}).get("visitor_mgmt"):
-            try:
-                from ..model_registry import get_insightface
-
-                log_mem("Before loading face analysis model")
-                start = time.perf_counter()
-                self.face_app = get_insightface(cfg.get("visitor_model", "buffalo_l"))
-                self.load_durations["face_model"] = time.perf_counter() - start
-                logger.info(
-                    "Face model loaded in {:.2f}s",
-                    self.load_durations["face_model"],
-                )
-            except RuntimeError as e:
-                logger.warning(
-                    f"InsightFace load error: {e}. Visitor management disabled"
-                )
-                self.face_app = None
-            except Exception as e:  # pragma: no cover - model load failure
-                logger.error(f"InsightFace load error: {e}")
         self.unique_counter = UniqueFaceCounter(similarity=self.face_count_similarity)
         features = cfg.get("features", {})
         self.face_tracking_enabled = bool(

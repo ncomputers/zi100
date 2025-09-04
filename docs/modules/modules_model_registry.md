@@ -8,10 +8,9 @@ Shared registry for heavy ML models to avoid redundant loads.
 None
 
 ## Key Functions
-- **_log_mem(note, device)** - 
-- **_resolve_device(device)** - 
+- **_log_mem(note, device)** -
+- **_resolve_device(device)** -
 - **get_yolo(path, device)** - Return a cached YOLO model for ``path`` on ``device``.
-- **get_insightface(name, det_size)** - Return a cached InsightFace ``FaceAnalysis`` instance.
 
 ## Inputs and Outputs
 Refer to function signatures above for inputs and outputs.
