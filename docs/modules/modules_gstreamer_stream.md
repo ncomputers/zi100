@@ -23,7 +23,6 @@ None
 - cv2
 - numpy
 - typing
-- utils.logging
 
 ## Configuration
 - `enable_gstreamer` – when `false`, skips importing GStreamer bindings.

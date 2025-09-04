@@ -38,7 +38,6 @@ Refer to function signatures above for inputs and outputs.
 - time
 - typing
 - utils.gpu
-- utils.logging
 - utils.redis
 - uuid
 - routers.visitor_utils
