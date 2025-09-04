@@ -268,8 +268,8 @@ if (typeof document !== "undefined" && !globalThis.__TEST__) {
       const debug = debugIds.some((id) => document.getElementById(id)?.checked);
       feeds.forEach((img) => {
         const cam = getLastPathSegment(img.src);
-        const base = "/stream/";
-        const target = debug ? base + cam : base + cam + "?raw=1";
+        const base = debug ? "/stream/preview/" : "/stream/clean/";
+        const target = base + cam;
         if (img.src.endsWith(target)) return;
         img.src = target;
       });

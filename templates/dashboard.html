@@ -172,7 +172,7 @@
                         {{cam.name}}
                       </div>
                       {% set debug_mode = cfg['show_lines'] or cfg['show_ids'] or cfg['show_track_lines'] or cfg['show_counts'] or cfg['show_face_boxes'] or cfg['enable_face_counting'] %}
-                      {% set stream_url = '/stream/preview/' ~ cam.id ~ ('' if debug_mode else '?raw=1') %}
+                      {% set stream_url = ('/stream/preview/' if debug_mode else '/stream/clean/') ~ cam.id %}
                       <img src="{{ stream_url }}" class="card-img-top feed-img" alt="feed" data-cam="{{cam.id}}">
                     </div>
                 </div>
@@ -275,7 +275,7 @@
         </div>
         {% if cameras %}
         {% set cam = cameras[0] %}
-        {% set stream_url = '/stream/preview/' ~ cam.id ~ ('' if debug_mode else '?raw=1') %}
+        {% set stream_url = ('/stream/preview/' if debug_mode else '/stream/clean/') ~ cam.id %}
         <div class="col-md-2">
             <img src="{{ stream_url }}" class="img-fluid feed-img" alt="feed" data-cam="{{ cam.id }}">
         </div>

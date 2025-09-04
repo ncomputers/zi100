@@ -41,7 +41,7 @@ required for upgrades or fresh installs.
 - **Dashboard history API**: Aggregated metrics are available via `/api/dashboard/stats?range=7d` where `range` may be `today`, `7d`, or `this_month`.
 - **Debug stats**: Visit `/debug` to monitor raw SSE data, connection status, and camera backend info.
 - **Debug overlays**: Toggle line, ID, and count overlays from the Settings page.
-- **Live feed optimization**: Dashboard streams the raw camera feed via `/stream/{cam_id}?raw=1` while analysis runs separately.
+- **Live feed optimization**: Dashboard streams the raw camera feed via `/stream/clean/{cam_id}` while analysis runs separately.
 - **Per-camera resolution**: Choose 480p, 720p, 1080p, or original when adding a camera.
 - **Camera status**: Online/offline indicators appear in the Cameras page for quick troubleshooting.
 - **Secure logins**: User passwords are stored as PBKDF2 hashes and verified using passlib.
