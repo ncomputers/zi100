@@ -1,6 +1,7 @@
 """Application configuration and thresholds."""
 
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -29,6 +30,7 @@ DEFAULT_CONFIG = {
     "preview_scale": 1.0,
     "detector_fps": 10,
     "adaptive_skip": False,
+    "person_model": "models/yolov8n.pt",
 }
 
 # Global configuration object to share across modules. Default settings may be
@@ -47,6 +49,11 @@ def set_config(cfg: dict) -> None:
     config.clear()
     config.update(DEFAULT_CONFIG)
     config.update(cfg)
+
+    if config.get("enable_person_tracking"):
+        pm = config.get("person_model")
+        if not pm or not Path(pm).is_file():
+            raise FileNotFoundError(f"person_model file not found: {pm}")
 
     # Keep centralized thresholds in sync with overrides
     FACE_THRESHOLDS.recognition_match = config.get(
