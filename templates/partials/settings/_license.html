@@ -16,7 +16,6 @@
                             <strong>Features:</strong>
                             In/Out {{'Yes' if cfg.license_info.features.in_out_counting else 'No'}},
                             PPE {{'Yes' if cfg.license_info.features.ppe_detection else 'No'}},
-                            VMS {{'Yes' if cfg.license_info.features.visitor_mgmt else 'No'}}<br>
                             <strong>Expires in:</strong>
                             {{((cfg.license_info.exp | int) - now_ts) // 86400}} days
                         </div>

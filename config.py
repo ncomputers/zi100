@@ -20,8 +20,8 @@ DEFAULT_CONFIG = {
     "enable_face_recognition": True,
     "default_host": "",
     "camera_id": "",
-    "license_info": {"features": {"visitor_mgmt": True, "face_recognition": True}},
-    "features": {"visitor_mgmt": True, "face_recognition": True},
+    "license_info": {"features": {"face_recognition": True}},
+    "features": {"face_recognition": True},
     # expose key for backward compatibility
     "face_match_thresh": FACE_THRESHOLDS.recognition_match,
     "local_buffer_size": 1,

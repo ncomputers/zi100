@@ -316,7 +316,6 @@ async def stop_all(app: FastAPI) -> None:
     """Signal all background threads to stop and wait for termination."""
     trackers = getattr(app.state, "trackers", {})
     ppe_worker = getattr(app.state, "ppe_worker", None)
-    visitor_worker = getattr(app.state, "visitor_worker", None)
     alert_worker = getattr(app.state, "alert_worker", None)
     worker_tasks = getattr(app.state, "worker_tasks", [])
 
@@ -336,8 +335,6 @@ async def stop_all(app: FastAPI) -> None:
     if ppe_worker:
         _stop_worker("PPE worker", ppe_worker, lambda w: setattr(w, "running", False))
 
-    if visitor_worker:
-        _stop_worker("Visitor worker", visitor_worker, lambda w: w.stop())
 
     if alert_worker:
         _stop_worker("Alert worker", alert_worker, lambda w: w.stop())
@@ -428,7 +425,6 @@ def init_app(
     app.state.cameras = cams
     app.state.trackers = trackers
     app.state.ppe_worker = None
-    app.state.visitor_worker = None
     app.state.alert_worker = None
     app.state.branding_path = branding_path
     app.state.templates = Jinja2Templates(directory=str(TEMPLATE_DIR))

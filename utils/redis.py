@@ -1,13 +1,4 @@
-"""Redis helper utilities.
-
-Key naming conventions:
-    ``gatepass:pass:{id}``        - main hash storing gate pass fields.
-    ``gatepass:signature:{id}``   - HMAC signature for approval tokens.
-    ``gatepass:cache:{id}``  - cached JSON representation (24h TTL).
-
-Gate pass hashes and signatures are expired using the visitor log retention
-window to limit historical data growth.
-"""
+"""Redis helper utilities."""
 
 import asyncio
 import os

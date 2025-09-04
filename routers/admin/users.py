@@ -14,7 +14,7 @@ from utils.deps import get_config_path, get_redis, get_settings, get_templates
 
 # Default roles and modules for user accounts
 DEFAULT_ROLES = ["admin", "viewer"]
-DEFAULT_MODULES = ["dashboard", "visitors", "reports", "settings"]
+DEFAULT_MODULES = ["dashboard", "reports", "settings"]
 
 router = APIRouter(prefix="/admin", dependencies=[Depends(require_admin)])
 

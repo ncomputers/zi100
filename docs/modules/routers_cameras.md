@@ -2,9 +2,7 @@
 [Back to Architecture Overview](../README.md)
 
 ## Purpose
-Camera management routes. Utilizes the shared
-`visitor_disabled_response` helper to standardize messaging when visitor
-management features are disabled or unlicensed.
+Camera management routes.
 
 ## Key Classes
 None
@@ -34,4 +32,3 @@ Refer to function signatures above for inputs and outputs.
 - modules.utils
 - typing
 - utils
-- routers.visitor_utils
