@@ -104,31 +104,6 @@
         </div>
     </div>
     {% endif %}
-    {% if 'face' in cfg.track_objects %}
-    <div class="stats-grid mb-3" data-widget="face">
-        <div class="stat-box gradient-green text-center" data-aos="fade-up">
-            <i class="fa-solid fa-face-smile fa-2x"></i>
-            <div class="stat-title">Faces Inside</div>
-            <div class="stat-number" id="face_current">{{group_counts.get('face', {}).get('current',0)}}</div>
-            <div class="stat-trend" id="face_current_trend"></div>
-            <canvas id="face_current_chart" class="trend-chart" {% if not cfg.enable_live_charts %}style="display:none"{% endif %}></canvas>
-        </div>
-        <div class="stat-box gradient-blue text-center" data-aos="fade-up">
-            <i class="fa-solid fa-user-plus fa-2x"></i>
-            <div class="stat-title">Faces Entered</div>
-            <div class="stat-number" id="face_in">{{group_counts.get('face', {}).get('in',0)}}</div>
-            <div class="stat-trend" id="face_in_trend"></div>
-            <canvas id="face_in_chart" class="trend-chart" {% if not cfg.enable_live_charts %}style="display:none"{% endif %}></canvas>
-        </div>
-        <div class="stat-box gradient-red text-center" data-aos="fade-up">
-            <i class="fa-solid fa-user-minus fa-2x"></i>
-            <div class="stat-title">Faces Exited</div>
-            <div class="stat-number" id="face_out">{{group_counts.get('face', {}).get('out',0)}}</div>
-            <div class="stat-trend" id="face_out_trend"></div>
-            <canvas id="face_out_chart" class="trend-chart" {% if not cfg.enable_live_charts %}style="display:none"{% endif %}></canvas>
-        </div>
-    </div>
-    {% endif %}
     <!-- ===== Section: PPE Anomaly KPIs ===== -->
     <div class="stats-grid mb-4" data-widget="anomaly">
         {% set colors = {
@@ -171,7 +146,7 @@
                       <div class="card-header">
                         {{cam.name}}
                       </div>
-                      {% set debug_mode = cfg['show_lines'] or cfg['show_ids'] or cfg['show_track_lines'] or cfg['show_counts'] or cfg['show_face_boxes'] or cfg['enable_face_counting'] %}
+                      {% set debug_mode = cfg['show_lines'] or cfg['show_ids'] or cfg['show_track_lines'] or cfg['show_counts'] %}
                       {% set stream_url = ('/stream/preview/' if debug_mode else '/stream/clean/') ~ cam.id %}
                       <img src="{{ stream_url }}" class="card-img-top feed-img" alt="feed" data-cam="{{cam.id}}">
                     </div>
@@ -556,9 +531,6 @@ function initSparklines(){
   sparkCharts.vehicle_current=makeSpark('vehicle_current_chart','blue');
   sparkCharts.vehicle_in=makeSpark('vehicle_in_chart','green');
   sparkCharts.vehicle_out=makeSpark('vehicle_out_chart','red');
-  sparkCharts.face_current=makeSpark('face_current_chart','blue');
-  sparkCharts.face_in=makeSpark('face_in_chart','green');
-  sparkCharts.face_out=makeSpark('face_out_chart','red');
   {% for item in cfg.alert_anomalies if item.startswith('no_') %}
   sparkCharts['{{ item }}_count'] = makeSpark('{{ item }}_chart', 'white');
   {% endfor %}
@@ -689,18 +661,6 @@ function handleData(d){
     const vc=document.getElementById('vehicle_current');
     if(vc) animateMetric('vehicle_current',gv.current);
     updateSpark('vehicle_current',gv.current);
-  }
-  if(d.group_counts && d.group_counts.face){
-    const gf=d.group_counts.face;
-    const fin=document.getElementById('face_in');
-    if(fin) animateMetric('face_in',gf.in);
-    updateSpark('face_in',gf.in);
-    const fout=document.getElementById('face_out');
-    if(fout) animateMetric('face_out',gf.out);
-    updateSpark('face_out',gf.out);
-    const fc=document.getElementById('face_current');
-    if(fc) animateMetric('face_current',gf.current);
-    updateSpark('face_current',gf.current);
   }
   if(d.anomaly_counts){
     for(const [k,v] of Object.entries(d.anomaly_counts)){
