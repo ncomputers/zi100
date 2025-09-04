@@ -30,7 +30,6 @@ dependencies = [
     "psutil",
     "numpy",
     "authlib",
-    "insightface",
     "weasyprint",
     "httpx",
     "email-validator",
