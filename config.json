@@ -6,19 +6,11 @@
   "device": "auto",
   "headless": false,
   "license_key": "eyJleHAiOjE3NTcyNjgwNTcsIm1heF9jYW1lcmFzIjozLCJmZWF0dXJlcyI6eyJpbl9vdXRfY291bnRpbmciOnRydWUsInBwZV9kZXRlY3Rpb24iOnRydWUsInZpc2l0b3JfbWdtdCI6dHJ1ZSwiZmFjZV9yZWNvZ25pdGlvbiI6dHJ1ZX0sImNsaWVudCI6ImRlbW8ifQ.VLsvp7whEf_femOFCESokHvyM9ZeoNbXSe-AO6DpUTc",
-  "visitor_model": "buffalo_l",
   "face_match_thresh": 0.6,
-  "visitor_conf_thresh": 0.85,
-  "visitor_sim_thresh": 0.85,
-  "visitor_min_face_size": 80,
-  "visitor_blur_thresh": 150.0,
-  "visitor_size_thresh": 10000,
-  "visitor_fps_skip": 2,
   "max_cameras": 3,
   "features": {
     "in_out_counting": true,
     "ppe_detection": false,
-    "visitor_mgmt": true,
     "face_recognition": true
   },
   "fps": 15,
@@ -191,7 +183,6 @@
     "features": {
       "in_out_counting": true,
       "ppe_detection": false,
-      "visitor_mgmt": true,
       "face_recognition": true
     },
     "client": "demo"

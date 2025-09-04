@@ -7,7 +7,6 @@ from fastapi.testclient import TestClient
 
 import app
 from config import config as cfg
-from routers import entry
 from utils import preflight
 from utils import redis as redis_utils
 
@@ -32,11 +31,9 @@ def client(monkeypatch):
     preflight.check_dependencies = lambda *a, **k: None
     app.init_app()
     app.app.state.config.setdefault("features", {})["visitor_mgmt"] = True
-    entry.config_obj.setdefault("features", {})["visitor_mgmt"] = True
     cfg.setdefault("features", {})["visitor_mgmt"] = True
     with TestClient(app.app) as c:
         c.post("/login", data={"username": "admin", "password": "rapidadmin"})
-        entry.redis = app.app.state.redis_client
         yield c
 
 

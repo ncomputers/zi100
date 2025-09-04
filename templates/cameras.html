@@ -18,7 +18,7 @@
     <a href="/cameras/add" class="btn btn-primary mb-4">Add Camera</a>
     <div class="table-responsive">
         <table class="table table-bordered">
-        <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>URL</th><th>Status</th><th>PPE</th><th>VMS</th><th>Face Recog</th><th>In/Out Count</th><th>Line</th><th>Orientation</th><th>Transport</th><th>Res</th><th>Rev</th><th>Enabled</th><th>Show</th><th>Actions</th></tr></thead>
+        <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>URL</th><th>Status</th><th>PPE</th><th>Face Recog</th><th>In/Out Count</th><th>Line</th><th>Orientation</th><th>Transport</th><th>Res</th><th>Rev</th><th>Enabled</th><th>Show</th><th>Actions</th></tr></thead>
 
 
         <tbody id="camBody">
@@ -51,18 +51,6 @@
                         <input type="checkbox" data-feature="ppe_detection" class="form-check-input ppe-check" checked>
                     {% else %}
                         <input type="checkbox" data-feature="ppe_detection" class="form-check-input ppe-check">
-                    {% endif %}
-                {% endif %}
-            </td>
-            {% set locked = not cfg.features.visitor_mgmt %}
-            <td class="col-vms">
-                {% if locked %}
-                    <i class="bi bi-lock-fill text-muted" data-bs-toggle="tooltip" title="VMS not in license"></i>
-                {% else %}
-                    {% if c.visitor_mgmt %}
-                        <input type="checkbox" data-feature="visitor_mgmt" class="form-check-input vms-check" checked>
-                    {% else %}
-                        <input type="checkbox" data-feature="visitor_mgmt" class="form-check-input vms-check">
                     {% endif %}
                 {% endif %}
             </td>
@@ -264,10 +252,9 @@ document.getElementById('camBody').addEventListener('click',async e=>{
     const res=row.querySelector('.res-select').value;
     const reverse=row.querySelector('.reverse-check').checked;
     const ppe=row.querySelector('[data-feature="ppe_detection"]')?.checked;
-    const visitor=row.querySelector('[data-feature="visitor_mgmt"]')?.checked;
     const fr=row.querySelector('[data-feature="face_recognition"]')?.checked;
     const counting=row.querySelector('.count-check')?.checked;
-    await fetch('/cameras/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({ppe,visitor_mgmt:visitor,face_recognition:fr,counting,reverse,line_orientation:lineOrient,orientation:orient,transport,resolution:res})});
+    await fetch('/cameras/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({ppe,face_recognition:fr,counting,reverse,line_orientation:lineOrient,orientation:orient,transport,resolution:res})});
 
     document.getElementById('msg').innerHTML='<div class="alert alert-success">Saved</div>';
   }
