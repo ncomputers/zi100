@@ -11,14 +11,12 @@ from . import (
     config_api,
     dashboard,
     detections,
-    entry,
     face_db,
     feedback,
-    gatepass,
     health,
 )
 from . import help as help_pages
-from . import mcp, ppe_reports, profile, reports, rtsp, settings, visitor, vms
+from . import mcp, ppe_reports, profile, reports, rtsp, settings
 from .admin import users as admin_users
 
 # Ordered registry of router modules
@@ -31,14 +29,9 @@ MODULES = [
     alerts,
     auth,
     admin_users,
-    visitor,
     face_db,
     api_faces,
     api_identities,
-
-    vms,
-    entry,
-    gatepass,
     health,
     profile,
     feedback,
@@ -68,14 +61,10 @@ def init_all(
     cam_routes.init_context(cfg, cams, trackers, redis_client, templates_dir)
     reports.init_context(cfg, trackers, redis_client, templates_dir, cams)
     ppe_reports.init_context(cfg, trackers, redis_client, templates_dir)
-    visitor.init_context(cfg, redis_client, templates_dir, cams)
     face_db.init_context(cfg, redis_client)
     api_faces.init_context(cfg, redis_client)
     api_identities.init_context(cfg, redis_client)
 
-    vms.init_context(cfg, redis_client, templates_dir)
-    entry.init_context(cfg, redis_client, templates_dir)
-    gatepass.init_context(cfg, redis_client, templates_dir)
     profile.init_context(cfg, redis_client, templates_dir)
     help_pages.init_context(cfg, templates_dir)
     mcp.init_context(cfg, templates_dir)
