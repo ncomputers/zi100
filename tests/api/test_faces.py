@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 
 from modules import face_db
 from routers import api_faces, visitor
-from routers.visitor import faces as visitor_faces
 from utils.deps import get_cameras
 
 
@@ -33,10 +32,7 @@ def api_client(tmp_path, monkeypatch):
     api_faces.init_context(cfg, r)
     app = FastAPI()
     app.include_router(api_faces.router)
-    app.include_router(visitor_faces.router)
-    app.dependency_overrides[visitor_faces.require_admin] = lambda: {"name": "admin"}
     app.dependency_overrides[get_cameras] = lambda: []
-    monkeypatch.setattr(visitor_faces, "_log_face_action", lambda *a, **k: None)
     return r, TestClient(app)
 
 
@@ -87,16 +83,6 @@ def test_attach_and_merge(api_client, monkeypatch):
     assert resp.json() == {"added": True}
     assert calls == [("abc", True), ("abc", False)]
 
-
-def test_delete_flow(api_client):
-    r, client = api_client
-    fid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    r.sadd("face:known_ids", fid)
-    r.hset(f"face:known:{fid}", mapping={"name": "alice"})
-    resp = client.post("/delete_faces", data={"face_ids": fid, "reason": "dup"})
-    assert resp.json()["deleted"]
-    assert not r.sismember("face:known_ids", fid)
-    assert r.sismember("face:deleted_ids", fid)
 
 
 def test_update_status(api_client):

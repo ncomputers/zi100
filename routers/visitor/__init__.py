@@ -202,12 +202,7 @@ def init_context(
 
     # ensure submodules referencing ``get_context`` receive updated state
     try:
-        from . import faces as _faces
         from . import visit_requests as _visit_requests
-
-        _faces.ctx = _ctx
-        _faces.redis = _ctx.redis
-        _faces.templates = _ctx.templates
 
         _visit_requests.ctx = _ctx
         _visit_requests.redis = _ctx.redis
@@ -271,7 +266,7 @@ def _search_embeddings(
 # ---------------------------------------------------------------------------
 router = APIRouter()
 
-from . import faces, invites  # noqa: E402
+from . import invites  # noqa: E402
 
 # Re-export invite creation helper for external access/tests
 from .invites import (  # noqa: F401
@@ -285,7 +280,6 @@ from .invites import (  # noqa: F401
     invite_public_submit,
 )
 
-router.include_router(faces.router)
 router.include_router(invites.router)
 
 __all__ = [
