@@ -1,41 +1,7 @@
 from datetime import datetime
-from pathlib import Path
 from typing import Any
 
 from modules import face_db
-from utils.ids import generate_id
-from utils.image import decode_base64_image
-
-
-def save_base64_to_image(
-    base64_string: str, filename_prefix: str = "", subdir: str = ""
-) -> str:
-    """Decode ``base64_string`` and store it under ``face_db`` directory.
-
-    Parameters
-    ----------
-    base64_string: str
-        The image encoded in base64. It may optionally include a ``data:*``
-        prefix which will be stripped before decoding.
-    filename_prefix: str, optional
-        Prefix added to the generated filename.
-    subdir: str, optional
-        Sub-directory inside ``face_db`` where the image will be stored.
-
-    Returns
-    -------
-    str
-        The filesystem path to the saved image.
-    """
-    if "," in base64_string:
-        base64_string = base64_string.split(",", 1)[1]
-    folder = Path("face_db") / subdir / datetime.now().strftime("%Y-%m-%d")
-    folder.mkdir(parents=True, exist_ok=True)
-    filename = f"{filename_prefix}_{generate_id()}.jpg"
-    file_path = folder / filename
-    with open(file_path, "wb") as f:
-        f.write(decode_base64_image(base64_string))
-    return str(file_path)
 
 
 def add_face_to_known_db(
