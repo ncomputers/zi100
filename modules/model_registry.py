@@ -54,12 +54,16 @@ def get_yolo(path: str, device: "torch.device | str | None" = None) -> YOLO:
     """Return a cached YOLO model for ``path`` on ``device``."""
     if YOLO is None:
         raise RuntimeError("YOLO not available")
+    if not path:
+        raise ValueError("Model path must be provided")
     dev = _resolve_device(device)
     key = (path, dev.type)
     model = _yolo_models.get(key)
     if model is None:
         _log_mem(f"Before loading YOLO model {path}", dev)
         model = YOLO(path)
+        if not hasattr(getattr(model, "model", None), "to"):
+            raise RuntimeError(f"Invalid YOLO model for path: {path}")
         model.model.to(dev)
         if dev.type == "cuda":
             model.model.half()
