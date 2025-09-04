@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import io
 import json
 import os
 import queue
@@ -13,9 +14,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Annotated, AsyncIterator, Dict, Iterable
 
-import io
-from mjpeg.server import MJPEGResponse
-from PIL import Image
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import (
     HTMLResponse,
@@ -25,6 +23,8 @@ from fastapi.responses import (
 )
 from fastapi.templating import Jinja2Templates
 from loguru import logger
+from mjpeg.server import MJPEGResponse
+from PIL import Image
 from redis.exceptions import ConnectionError as RedisConnectionError
 
 from core.config import ANOMALY_ITEMS, PPE_TASKS
@@ -389,7 +389,25 @@ async def _stream_response(
         return res
     tr = trackers_map.get(cam_id)
     if not tr:
-        return HTMLResponse("Not found", status_code=404)
+        # Attempt to start the tracker if the camera exists
+        from routers.cameras import camera_manager
+
+        cam = getattr(camera_manager, "_find_cam", lambda _cid: None)(cam_id)
+        if not cam:
+            return HTMLResponse("Not found", status_code=404)
+
+        await camera_manager.start(cam_id)
+
+        for _ in range(10):
+            tr = trackers_map.get(cam_id)
+            if tr and getattr(tr, "output_frame", None) is not None:
+                break
+            await asyncio.sleep(0.1)
+
+        if not tr:
+            return HTMLResponse("Not found", status_code=404)
+        if getattr(tr, "output_frame", None) is None:
+            return HTMLResponse("Camera starting, retry shortly.", status_code=503)
 
     def gen():
         if not raw:
